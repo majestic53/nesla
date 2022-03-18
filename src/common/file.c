@@ -46,7 +46,7 @@ size_t nesla_file_get_size(const nesla_file_t *file)
     return result;
 }
 
-nesla_error_e nesla_file_open(nesla_file_t *file, const char *path)
+nesla_error_e nesla_file_open(nesla_file_t *file, const char *path, bool create)
 {
     nesla_error_e result;
 

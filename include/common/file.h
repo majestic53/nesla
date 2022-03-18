@@ -56,9 +56,10 @@ size_t nesla_file_get_size(const nesla_file_t *file);
  * @brief Open file at path.
  * @param[in,out] file Pointer to file context
  * @param[in] path Constant pointer to path string
+ * @param[in] create Create file if not found
  * @return NESLA_FAILURE on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_file_open(nesla_file_t *file, const char *path);
+nesla_error_e nesla_file_open(nesla_file_t *file, const char *path, bool create);
 
 /*!
  * @brief Read data from file.
