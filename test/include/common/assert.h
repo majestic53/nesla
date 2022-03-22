@@ -30,10 +30,10 @@
 /*!
  * @brief Test assertion macro.
  * @param[in] _CONDITION_ Assert on condition
- * @return NESL_FAILURE
+ * @return NESLA_FAILURE
  */
 #define ASSERT(_CONDITION_) \
-    (_CONDITION_) ? NESL_SUCCESS : nesla_assert(# _CONDITION_, __FILE__, __FUNCTION__, __LINE__)
+    (_CONDITION_) ? NESLA_SUCCESS : nesla_assert(# _CONDITION_, __FILE__, __FUNCTION__, __LINE__)
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,7 +45,7 @@ extern "C" {
  * @param[in] file Constant pointer to file string
  * @param[in] function Constant pointer to function string
  * @param[in] line File line
- * @return NESL_FAILURE
+ * @return NESLA_FAILURE
  */
 nesla_error_e nesla_assert(const char *condition, const char *file, const char *function, size_t line)
 {

@@ -51,7 +51,7 @@ This project uses the following coding style:
      */
     int nesla_xxx_yyy(nesla_xxx_t *arg_0, nesla_xxx_e arg_1, ...)
     {
-        int result = NESL_SUCCESS;
+        int result = NESLA_SUCCESS;
 
         if(arg_0 == NULL) {
             result = NESLA_FAILURE;

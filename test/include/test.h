@@ -49,7 +49,7 @@
 
 /*!
  * @brief Test function.
- * @return NESL_FAILURE on failure, NESL_SUCCESS otherwise
+ * @return NESLA_FAILURE on failure, NESLA_SUCCESS otherwise
  */
 typedef nesla_error_e (*test)(void);
 
