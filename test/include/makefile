@@ -17,53 +17,39 @@
 # AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-DIR_DOCS=docs/
-DIR_SRC=src/
-DIR_TEST=test/
+DIR_INCLUDE=../../include/
+DIR_INCLUDE_TEST=../include/
+DIR_ROOT=./
 
-FLAGS=-march=native\ -mtune=native\ -std=c11\ -Wall\ -Werror
-FLAGS_DEBUG=FLAGS=$(FLAGS)\ -g
-FLAGS_RELEASE=FLAGS=$(FLAGS)\ -O3\ -flto
-FLAGS_MAKE=--no-print-directory -C
-
-MAX_PARALLEL=8
+FILE_BIN=$(DIR_ROOT)test_$(FILE)
+FLAGS_INCLUDE=$(subst $(DIR_INCLUDE),-I$(DIR_INCLUDE),$(shell find $(DIR_INCLUDE) -maxdepth 2 -type d))
+FLAGS_INCLUDE_TEST=$(subst $(DIR_INCLUDE_TEST),-I$(DIR_INCLUDE_TEST),$(shell find $(DIR_INCLUDE_TEST) -maxdepth 1 -type d))
+FILES_OBJ=$(patsubst $(DIR_ROOT)%.c,$(DIR_ROOT)%.o,$(FILES_SRC))
+FILES_SRC=$(shell find $(DIR_ROOT) -name '*.c')
 
 .PHONY: all
-all: release
+all: build
 
-.PHONY: analyze
-analyze:
-	@cloc .
-	@cppcheck --enable=all --std=c11 --suppress=missingIncludeSystem .
+.PHONY: build
+build: $(FILE_BIN)
 
-.PHONY: docs
-docs:
-	@rm -rf $(DIR_DOCS)html
-	@doxygen $(DIR_DOCS)Doxyfile
-
-.PHONY: debug
-debug:
-	@make $(FLAGS_MAKE) $(DIR_SRC) build -j${MAX_PARALLEL} $(FLAGS_DEBUG)
-
-.PHONY: release
-release:
-	@make $(FLAGS_MAKE) $(DIR_SRC) build -j${MAX_PARALLEL} $(FLAGS_RELEASE)
-	@make $(FLAGS_MAKE) $(DIR_SRC) strip
-
-.PHONY: test
-test: test-release
-
-.PHONY: test-debug
-test-debug:
-	@make $(FLAGS_MAKE) $(DIR_TEST) build $(FLAGS_DEBUG)
-	@make $(FLAGS_MAKE) $(DIR_TEST) run
-
-.PHONY: test-release
-test-release:
-	@make $(FLAGS_MAKE) $(DIR_TEST) build $(FLAGS_RELEASE)
-	@make $(FLAGS_MAKE) $(DIR_TEST) run
+.PHONY: run
+run:
+	@if ! ./$(FILE_BIN); then \
+		exit 1; \
+	fi
 
 .PHONY: clean
 clean:
-	@make $(FLAGS_MAKE) $(DIR_SRC) clean
-	@make $(FLAGS_MAKE) $(DIR_TEST) clean
+	@rm -rf $(FILE_BIN)
+	@rm -rf $(FILES_OBJ)
+	@rm -rf $(DIR_SRC)$(FILE).o
+
+$(DIR_SRC)$(FILE).o: $(DIR_SRC)$(FILE).c
+	$(CC) $(FLAGS) $(FLAGS_INCLUDE) -c -o $@ $<
+
+$(DIR_ROOT)%.o: $(DIR_ROOT)%.c
+	$(CC) $(FLAGS) $(FLAGS_INCLUDE) $(FLAGS_INCLUDE_TEST) -c -o $@ $<
+
+$(FILE_BIN): $(DIR_SRC)$(FILE).o $(FILES_OBJ)
+	$(CC) $(FLAGS) $(DIR_SRC)$(FILE).o $(FILES_OBJ) -o $@

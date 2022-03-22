@@ -1,4 +1,4 @@
-# NESLA
+# NESL
 # Copyright (C) 2022 David Jolly
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -17,53 +17,35 @@
 # AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-DIR_DOCS=docs/
-DIR_SRC=src/
-DIR_TEST=test/
+DIR_TESTS=$(filter-out include/,$(wildcard */))
 
-FLAGS=-march=native\ -mtune=native\ -std=c11\ -Wall\ -Werror
-FLAGS_DEBUG=FLAGS=$(FLAGS)\ -g
-FLAGS_RELEASE=FLAGS=$(FLAGS)\ -O3\ -flto
 FLAGS_MAKE=--no-print-directory -C
 
 MAX_PARALLEL=8
 
 .PHONY: all
-all: release
+all: build
 
-.PHONY: analyze
-analyze:
-	@cloc .
-	@cppcheck --enable=all --std=c11 --suppress=missingIncludeSystem .
+.PHONY: build
+build:
+	@for test in $(DIR_TESTS); do \
+		make $(FLAGS_MAKE) $$test build -j${MAX_PARALLEL}; \
+	done
 
-.PHONY: docs
-docs:
-	@rm -rf $(DIR_DOCS)html
-	@doxygen $(DIR_DOCS)Doxyfile
-
-.PHONY: debug
-debug:
-	@make $(FLAGS_MAKE) $(DIR_SRC) build -j${MAX_PARALLEL} $(FLAGS_DEBUG)
-
-.PHONY: release
-release:
-	@make $(FLAGS_MAKE) $(DIR_SRC) build -j${MAX_PARALLEL} $(FLAGS_RELEASE)
-	@make $(FLAGS_MAKE) $(DIR_SRC) strip
-
-.PHONY: test
-test: test-release
-
-.PHONY: test-debug
-test-debug:
-	@make $(FLAGS_MAKE) $(DIR_TEST) build $(FLAGS_DEBUG)
-	@make $(FLAGS_MAKE) $(DIR_TEST) run
-
-.PHONY: test-release
-test-release:
-	@make $(FLAGS_MAKE) $(DIR_TEST) build $(FLAGS_RELEASE)
-	@make $(FLAGS_MAKE) $(DIR_TEST) run
+.PHONY: run
+run:
+	@result=0; \
+	for test in $(DIR_TESTS); do \
+		if ! make $(FLAGS_MAKE) $$test run; then \
+			result=1; \
+		fi \
+	done; \
+	if [ $$result -ne 0 ]; then \
+		exit 1; \
+	fi
 
 .PHONY: clean
 clean:
-	@make $(FLAGS_MAKE) $(DIR_SRC) clean
-	@make $(FLAGS_MAKE) $(DIR_TEST) clean
+	@for test in $(DIR_TESTS); do \
+		make $(FLAGS_MAKE) $$test clean; \
+	done

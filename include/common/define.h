@@ -27,11 +27,15 @@
 #ifndef NESLA_DEFINE_H_
 #define NESLA_DEFINE_H_
 
+#define _POSIX_SOURCE
+
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #endif /* NESLA_DEFINE_H_ */

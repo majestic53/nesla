@@ -20,76 +20,42 @@
  */
 
 /*!
- * @file file.c
- * @brief Read/write files.
+ * @file assert.h
+ * @brief Test assertion.
  */
 
-#include <common.h>
+#ifndef NESLA_TEST_ASSERT_H_
+#define NESLA_TEST_ASSERT_H_
+
+/*!
+ * @brief Test assertion macro.
+ * @param[in] _CONDITION_ Assert on condition
+ * @return NESL_FAILURE
+ */
+#define ASSERT(_CONDITION_) \
+    (_CONDITION_) ? NESL_SUCCESS : nesla_assert(# _CONDITION_, __FILE__, __FUNCTION__, __LINE__)
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-void nesla_file_close(nesla_file_t *file)
+/*!
+ * @brief Test assertion.
+ * @param[in] condition Constant pointer to condition string
+ * @param[in] file Constant pointer to file string
+ * @param[in] function Constant pointer to function string
+ * @param[in] line File line
+ * @return NESL_FAILURE
+ */
+nesla_error_e nesla_assert(const char *condition, const char *file, const char *function, size_t line)
 {
-    /* TODO */
-}
+    fprintf(stderr, "Assert failed -- %s (%s:%s@%zu)\n", condition, function, file, line);
 
-size_t nesla_file_get_size(const nesla_file_t *file)
-{
-    size_t result;
-
-    /* TODO */
-    result = 0;
-    /* --- */
-
-    return result;
-}
-
-nesla_error_e nesla_file_open(nesla_file_t *file, const char *path, bool create)
-{
-    nesla_error_e result;
-
-    /* TODO */
-    result = NESLA_SUCCESS;
-    /* --- */
-
-    return result;
-}
-
-nesla_error_e nesla_file_read(nesla_file_t *file, uint8_t *data, size_t *length)
-{
-    nesla_error_e result;
-
-    /* TODO */
-    result = NESLA_SUCCESS;
-    /* --- */
-
-    return result;
-}
-
-nesla_error_e nesla_file_seek(nesla_file_t *file, size_t offset, bool relative)
-{
-    nesla_error_e result;
-
-    /* TODO */
-    result = NESLA_SUCCESS;
-    /* --- */
-
-    return result;
-}
-
-nesla_error_e nesla_file_write(nesla_file_t *file, const uint8_t *data, size_t *length)
-{
-    nesla_error_e result;
-
-    /* TODO */
-    result = NESLA_SUCCESS;
-    /* --- */
-
-    return result;
+    return NESLA_FAILURE;
 }
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* NESLA_TEST_ASSERT_H_ */

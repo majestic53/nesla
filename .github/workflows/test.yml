@@ -1,4 +1,4 @@
-name: Build
+name: Test
 
 on:
     push:
@@ -17,9 +17,9 @@ jobs:
             - name: Dependency Information
               run: |
                 echo "gcc `gcc --version | grep gcc | awk '{print $3}'`"
-            - name: Build Debug
+            - name: Test Debug
               run: |
-                make debug
+                make test-debug
               env:
                 CC: gcc
     Release:
@@ -32,8 +32,8 @@ jobs:
             - name: Dependency Information
               run: |
                 echo "gcc `gcc --version | grep gcc | awk '{print $3}'`"
-            - name: Build Release
+            - name: Test Release
               run: |
-                make release
+                make test-release
               env:
                 CC: gcc

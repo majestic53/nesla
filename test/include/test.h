@@ -20,25 +20,37 @@
  */
 
 /*!
- * @file nesla.h
- * @brief NESLA interface.
+ * @file test.h
+ * @brief Common test header.
  */
 
-#include <common.h>
+#ifndef NESLA_TEST_H_
+#define NESLA_TEST_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#include <assert.h>
 
-nesla_error_e nesla(const nesla_t *context)
-{
-    nesla_error_e result = NESLA_SUCCESS;
+/*!
+ * @brief Test count macro.
+ * @param[in] _TESTS_ Pointer to test array
+ * @return Number of test in test array
+ */
+#define TEST_COUNT(_TESTS_) \
+    sizeof(_TESTS_) / sizeof(*(_TESTS_))
 
-    /* TODO */
+/*!
+ * @brief Test result macro.
+ * @param[in] _RESULT_ Test result
+ */
+#define TEST_RESULT(_RESULT_) \
+    fprintf(((_RESULT_) != NESLA_SUCCESS) ? stderr : stdout, "[%s%s%s] %s\n", \
+        ((_RESULT_) != NESLA_SUCCESS) ? "\x1b[91m" : "\x1b[94m", \
+        ((_RESULT_) != NESLA_SUCCESS) ? "FAIL" : "PASS", \
+        "\x1b[0m", __FUNCTION__)
 
-    return result;
-}
+/*!
+ * @brief Test function.
+ * @return NESL_FAILURE on failure, NESL_SUCCESS otherwise
+ */
+typedef nesla_error_e (*test)(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+#endif /* NESLA_TEST_H_ */
