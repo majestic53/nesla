@@ -1,6 +1,6 @@
 # NESLA (NESL-Assembler)
 
-[![License: MIT](https://shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE.md) [![Build Status](https://github.com/majestic53/nesla/workflows/Build/badge.svg)](https://github.com/majestic53/nesla/actions/workflows/build.yml)
+[![License: MIT](https://shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE.md) [![Build Status](https://github.com/majestic53/nesla/workflows/Build/badge.svg)](https://github.com/majestic53/nesla/actions/workflows/build.yml) [![Test Status](https://github.com/majestic53/nesla/workflows/Test/badge.svg)](https://github.com/majestic53/nesla/actions/workflows/test.yml)
 
 ### A lightweight NES assembler, written in C.
 
