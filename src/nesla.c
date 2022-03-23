@@ -20,7 +20,7 @@
  */
 
 /*!
- * @file nesla.h
+ * @file nesla.c
  * @brief NESLA interface.
  */
 

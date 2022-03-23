@@ -32,7 +32,7 @@
 
 /*!
  * @enum nesla_error_e
- * @brief NESLA error codes.
+ * @brief Error code.
  */
 typedef enum {
     NESLA_FAILURE = -1,                         /*!< Operation failed, call nesla_get_error */
@@ -50,7 +50,7 @@ typedef struct {
 
 /*!
  * @struct nesla_version_t
- * @brief NESLA version context.
+ * @brief Version context.
  */
 typedef struct {
     int major;                                  /*!< Major version */
@@ -70,14 +70,14 @@ extern "C" {
 nesla_error_e nesla(const nesla_t *context);
 
 /*!
- * @brief Get NESLA error string.
- * @return Constant pointer to NESLA error string
+ * @brief Get error string.
+ * @return Constant pointer to error string
  */
 const char *nesla_get_error(void);
 
 /*!
- * @brief Get NESLA version.
- * @return Constant pointer to NESLA version
+ * @brief Get version.
+ * @return Constant pointer to version
  */
 const nesla_version_t *nesla_get_version(void);
 

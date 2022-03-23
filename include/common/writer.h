@@ -50,14 +50,14 @@ extern "C" {
 void nesla_writer_close(nesla_writer_t *writer);
 
 /*!
- * @brief Get writer file path.
+ * @brief Get writer context file path.
  * @param[in] writer Pointer to writer context
  * @return File path
  */
 const char *nesla_writer_get_path(const nesla_writer_t *writer);
 
 /*!
- * @brief Get writer file size.
+ * @brief Get writer context file size.
  * @param[in,out] writer Pointer to writer context
  * @param[in,out] size File size in bytes
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise

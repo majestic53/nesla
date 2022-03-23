@@ -28,7 +28,7 @@
 
 /*!
  * @struct nesla_error_t
- * @brief Contains the error context.
+ * @brief Error context.
  */
 typedef struct {
     char buffer[256];               /*!< Error string */

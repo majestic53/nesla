@@ -1,3 +1,5 @@
+This project assembles source files to be run on the [NESL emulator](https://github.com/majestic53/nesl).
+
 ### File layout
 
 Source files are placed into subdirectories, under `src/`.
