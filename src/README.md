@@ -2,7 +2,7 @@
 
 ## File layout
 
-* Source files are placed into subdirectories, under `src/`.
+Source files are placed into subdirectories, under `src/`.
 
 |Directory   |Description           |
 |:-----------|:---------------------|
