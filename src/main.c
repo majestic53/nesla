@@ -37,10 +37,10 @@
  * @brief Interface option.
  */
 typedef enum {
-    OPTION_HELP,            /*!< Show help information */
-    OPTION_OUTPUT,          /*!< Set output directory */
-    OPTION_VERSION,         /*!< Show version information */
-    OPTION_MAX,             /*!< Maximum option */
+    OPTION_HELP,    /*!< Show help information */
+    OPTION_OUTPUT,  /*!< Set output directory */
+    OPTION_VERSION, /*!< Show version information */
+    OPTION_MAX,     /*!< Maximum option */
 } nesla_option_e;
 
 /*!

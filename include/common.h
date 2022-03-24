@@ -28,7 +28,7 @@
 #define NESLA_COMMON_H_
 
 #include <nesla.h>
-#include <error.h>
+#include <list.h>
 #include <reader.h>
 #include <writer.h>
 

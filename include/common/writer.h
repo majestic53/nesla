@@ -27,7 +27,7 @@
 #ifndef NESLA_WRITER_H_
 #define NESLA_WRITER_H_
 
-#include <define.h>
+#include <error.h>
 
 /*!
  * @struct nesla_writer_t
@@ -74,21 +74,13 @@ nesla_error_e nesla_writer_get_size(nesla_writer_t *writer, size_t *size);
 nesla_error_e nesla_writer_open(nesla_writer_t *writer, const char *path, bool create);
 
 /*!
- * @brief Put character into writer context.
- * @param[in,out] writer Pointer to writer context
- * @param[in] data Character into writer context
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_writer_put(nesla_writer_t *writer, uint8_t data);
-
-/*!
  * @brief Put string into writer context.
  * @param[in,out] writer Pointer to writer context
  * @param[in] data String into writer context
  * @param[in] length String length in bytes
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_writer_puts(nesla_writer_t *writer, const uint8_t *data, size_t length);
+nesla_error_e nesla_writer_put(nesla_writer_t *writer, const uint8_t *data, size_t length);
 
 /*!
  * @brief Reset writer context.

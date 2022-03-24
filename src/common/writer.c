@@ -54,14 +54,14 @@ nesla_error_e nesla_writer_get_size(nesla_writer_t *writer, size_t *size)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(writer->base, 0, SEEK_END)) {
-        result = SET_ERROR("%s", "Failed to seek file end");
+        result = SET_ERROR("Failed to seek file end: %s", strerror(errno));
         goto exit;
     }
 
     *size = ftell(writer->base);
 
     if(fseek(writer->base, 0, SEEK_SET)) {
-        result = SET_ERROR("%s", "Failed to seek file end");
+        result = SET_ERROR("Failed to seek file end: %s", strerror(errno));
         goto exit;
     }
 
@@ -74,12 +74,12 @@ nesla_error_e nesla_writer_open(nesla_writer_t *writer, const char *path, bool c
     nesla_error_e result = NESLA_SUCCESS;
 
     if(!(writer->base = fopen(path, create ? "wb" : "wbx"))) {
-        result = SET_ERROR("Failed to open %s", path);
+        result = SET_ERROR("Failed to open %s: %s", path, strerror(errno));
         goto exit;
     }
 
     if(!(writer->offset = freopen(path, create ? "wb" : "wbx", writer->base))) {
-        result = SET_ERROR("%s", "Failed to duplicate file pointer");
+        result = SET_ERROR("Failed to duplicate file pointer: %s", strerror(errno));
         goto exit;
     }
 
@@ -89,17 +89,12 @@ exit:
     return result;
 }
 
-nesla_error_e nesla_writer_put(nesla_writer_t *writer, uint8_t data)
-{
-    return nesla_writer_puts(writer, &data, 1);
-}
-
-nesla_error_e nesla_writer_puts(nesla_writer_t *writer, const uint8_t *data, size_t length)
+nesla_error_e nesla_writer_put(nesla_writer_t *writer, const uint8_t *data, size_t length)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fwrite(data, sizeof(*data), length, writer->offset) != length) {
-        result = SET_ERROR("Failed to write %.02f KB (%zu bytes)", length / 1024.f, length);
+        result = SET_ERROR("Failed to write %.02f KB (%zu bytes): %s", length / 1024.f, length, strerror(errno));
         goto exit;
     }
 
@@ -112,12 +107,12 @@ nesla_error_e nesla_writer_reset(nesla_writer_t *writer)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(writer->base, 0, SEEK_SET)) {
-        result = SET_ERROR("%s", "Failed to seek file set");
+        result = SET_ERROR("Failed to seek file set: %s", strerror(errno));
         goto exit;
     }
 
     if(fseek(writer->offset, 0, SEEK_SET)) {
-        result = SET_ERROR("%s", "Failed to seek file set");
+        result = SET_ERROR("Failed to seek file set: %s", strerror(errno));
         goto exit;
     }
 

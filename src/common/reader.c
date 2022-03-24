@@ -44,9 +44,17 @@ void nesla_reader_close(nesla_reader_t *reader)
     memset(reader, 0, sizeof(*reader));
 }
 
-nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data)
+nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data, size_t length)
 {
-    return nesla_reader_gets(reader, data, 1);
+    nesla_error_e result = NESLA_SUCCESS;
+
+    if(fread(data, sizeof(*data), length, reader->offset) != length) {
+        result = SET_ERROR("Failed to read %.02f KB (%zu bytes): %s", length / 1024.f, length, strerror(errno));
+        goto exit;
+    }
+
+exit:
+    return result;
 }
 
 const char *nesla_reader_get_path(const nesla_reader_t *reader)
@@ -59,27 +67,14 @@ nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(reader->base, 0, SEEK_END)) {
-        result = SET_ERROR("%s", "Failed to seek file end");
+        result = SET_ERROR("Failed to seek file end: %s", strerror(errno));
         goto exit;
     }
 
     *size = ftell(reader->base);
 
     if(fseek(reader->base, 0, SEEK_SET)) {
-        result = SET_ERROR("%s", "Failed to seek file end");
-        goto exit;
-    }
-
-exit:
-    return result;
-}
-
-nesla_error_e nesla_reader_gets(nesla_reader_t *reader, uint8_t *data, size_t length)
-{
-    nesla_error_e result = NESLA_SUCCESS;
-
-    if(fread(data, sizeof(*data), length, reader->offset) != length) {
-        result = SET_ERROR("Failed to read %.02f KB (%zu bytes)", length / 1024.f, length);
+        result = SET_ERROR("Failed to seek file end: %s", strerror(errno));
         goto exit;
     }
 
@@ -92,12 +87,12 @@ nesla_error_e nesla_reader_open(nesla_reader_t *reader, const char *path)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(!(reader->base = fopen(path, "rb"))) {
-        result = SET_ERROR("Failed to open %s", path);
+        result = SET_ERROR("Failed to open %s: %s", path, strerror(errno));
         goto exit;
     }
 
     if(!(reader->offset = freopen(path, "rb", reader->base))) {
-        result = SET_ERROR("%s", "Failed to duplicate file pointer");
+        result = SET_ERROR("Failed to duplicate file pointer: %s", strerror(errno));
         goto exit;
     }
 
@@ -112,12 +107,12 @@ nesla_error_e nesla_reader_reset(nesla_reader_t *reader)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(reader->base, 0, SEEK_SET)) {
-        result = SET_ERROR("%s", "Failed to seek file set");
+        result = SET_ERROR("Failed to seek file set: %s", strerror(errno));
         goto exit;
     }
 
     if(fseek(reader->offset, 0, SEEK_SET)) {
-        result = SET_ERROR("%s", "Failed to seek file set");
+        result = SET_ERROR("Failed to seek file set: %s", strerror(errno));
         goto exit;
     }
 

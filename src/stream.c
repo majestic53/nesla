@@ -20,7 +20,7 @@
  */
 
 /*!
- * @file nesla.h
+ * @file stream.c
  * @brief NESLA stream.
  */
 
@@ -30,9 +30,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-uint8_t nesla_stream_get(const nesla_stream_t *stream)
+char nesla_stream_get(const nesla_stream_t *stream)
 {
-    return stream->character;
+    return (char)stream->character;
 }
 
 size_t nesla_stream_get_column(const nesla_stream_t *stream)
@@ -107,7 +107,7 @@ nesla_error_e nesla_stream_next(nesla_stream_t *stream)
         stream->row = 0;
     }
 
-    return nesla_reader_get(&stream->reader, &stream->character);
+    return nesla_reader_get(&stream->reader, &stream->character, 1);
 }
 
 nesla_error_e nesla_stream_reset(nesla_stream_t *stream)

@@ -27,7 +27,7 @@
 #ifndef NESLA_READER_H_
 #define NESLA_READER_H_
 
-#include <define.h>
+#include <error.h>
 
 /*!
  * @struct nesla_reader_t
@@ -50,12 +50,13 @@ extern "C" {
 void nesla_reader_close(nesla_reader_t *reader);
 
 /*!
- * @brief Get character from reader context.
+ * @brief Get string from reader context.
  * @param[in,out] reader Pointer to reader context
- * @param[in,out] data Character from reader context
+ * @param[in,out] data String from reader context
+ * @param[in] length String length in bytes
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data);
+nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data, size_t length);
 
 /*!
  * @brief Get reader context file path.
@@ -71,15 +72,6 @@ const char *nesla_reader_get_path(const nesla_reader_t *reader);
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size);
-
-/*!
- * @brief Get string from reader context.
- * @param[in,out] reader Pointer to reader context
- * @param[in,out] data String from reader context
- * @param[in] length String length in bytes
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_reader_gets(nesla_reader_t *reader, uint8_t *data, size_t length);
 
 /*!
  * @brief Open reader context with a path.

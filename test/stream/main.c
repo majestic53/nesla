@@ -27,7 +27,7 @@
 #include <stream.h>
 #include <test.h>
 
-#define TEST_DATA "abc\n012\n.,;\n   "
+#define TEST_DATA "abc\n012\n.,;\n   \0"
 #define TEST_PATH "test.asm"
 
 /*!
@@ -60,6 +60,23 @@ void nesla_reader_close(nesla_reader_t *reader)
     }
 }
 
+nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data, size_t length)
+{
+    nesla_error_e result = NESLA_SUCCESS;
+
+    if((reader != &g_test.stream.reader)
+            || (length != 1)
+            || (g_test.reader.position >= strlen(g_test.reader.data))) {
+        result = NESLA_FAILURE;
+        goto exit;
+    }
+
+    *data = g_test.reader.data[g_test.reader.position++];
+
+exit:
+    return result;
+}
+
 const char *nesla_reader_get_path(const nesla_reader_t *reader)
 {
 
@@ -85,31 +102,13 @@ exit:
     return result;
 }
 
-nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data)
-{
-    nesla_error_e result = NESLA_SUCCESS;
-
-    if(reader != &g_test.stream.reader) {
-        result = NESLA_FAILURE;
-        goto exit;
-    }
-
-    if(g_test.reader.position >= strlen(g_test.reader.data)) {
-        result = NESLA_FAILURE;
-        goto exit;
-    }
-
-    *data = g_test.reader.data[g_test.reader.position++];
-
-exit:
-    return result;
-}
-
 nesla_error_e nesla_reader_open(nesla_reader_t *reader, const char *path)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    if(reader != &g_test.stream.reader) {
+    if((reader != &g_test.stream.reader)
+            || (path == NULL)
+            || (strlen(path) == 0)) {
         result = NESLA_FAILURE;
         goto exit;
     }
