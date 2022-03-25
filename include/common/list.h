@@ -60,7 +60,7 @@ extern "C" {
  * @param[in,out] entry Pointer to list entry context, or NULL
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_entry_t *entry);
+nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_entry_t **entry);
 
 /*!
  * @brief Get list entry context at head.

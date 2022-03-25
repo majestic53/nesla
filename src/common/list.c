@@ -30,7 +30,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_entry_t *entry)
+nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_entry_t **entry)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
@@ -39,10 +39,10 @@ nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_
         goto exit;
     }
 
-    entry = list->head;
+    *entry = list->head;
 
     for(size_t offset = 0; offset < index; ++offset) {
-        entry = entry->next;
+        *entry = (*entry)->next;
     }
 
 exit:
@@ -82,21 +82,25 @@ nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, c
             new_entry->next = list->head;
             list->head->previous = new_entry;
         }
+
+        list->head = new_entry;
+
+        if(!list->tail) {
+            list->tail = list->head;
+        }
     } else if(entry == list->tail) {
         new_entry->previous = entry;
         entry->next = new_entry;
+        list->tail = new_entry;
+
+        if(!list->head) {
+            list->head = list->tail;
+        }
     } else {
         new_entry->next = entry->next;
         new_entry->previous = entry;
+        entry->next->previous = new_entry;
         entry->next = new_entry;
-    }
-
-    if(!new_entry->previous) {
-        list->head = new_entry;
-    }
-
-    if(!new_entry->next) {
-        list->tail = new_entry;
     }
 
     ++list->size;
@@ -121,18 +125,18 @@ nesla_error_e nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry)
 
     if(entry == list->head) {
 
-        if(entry->next) {
+        if((list->head = entry->next)) {
             entry->next->previous = NULL;
+        } else {
+            list->tail = NULL;
         }
-
-        list->head = entry->next;
     } else if(entry == list->tail) {
 
-        if(entry->previous) {
+        if((list->tail = entry->previous)) {
             entry->previous->next = NULL;
+        } else {
+            list->head = NULL;
         }
-
-        list->tail = entry->previous;
     } else {
         entry->previous->next = entry->next;
         entry->next->previous = entry->previous;
@@ -149,9 +153,9 @@ nesla_error_e nesla_list_reset(nesla_list_t *list)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    while(nesla_list_get_size(list)) {
+    while(list->size) {
 
-        if((result = nesla_list_remove(list, nesla_list_get_head(list))) == NESLA_FAILURE) {
+        if((result = nesla_list_remove(list, list->tail)) == NESLA_FAILURE) {
             goto exit;
         }
     }
