@@ -1,5 +1,9 @@
 # NESLA (NESL-Assembler) Sources
 
+## Formal Grammar
+
+See the formal grammar, under [`docs/grammar.md`](../docs/grammar.md).
+
 ## File layout
 
 Source files are placed into subdirectories, under `src/`.

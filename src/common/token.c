@@ -20,17 +20,18 @@
  */
 
 /*!
- * @file common.h
- * @brief Common header.
+ * @file token.c
+ * @brief Token.
  */
 
-#ifndef NESLA_COMMON_H_
-#define NESLA_COMMON_H_
+#include <common.h>
 
-#include <nesla.h>
-#include <list.h>
-#include <reader.h>
-#include <token.h>
-#include <writer.h>
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-#endif /* NESLA_COMMON_H_ */
+/* TODO */
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
