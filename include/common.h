@@ -30,7 +30,6 @@
 #include <nesla.h>
 #include <list.h>
 #include <reader.h>
-#include <token.h>
 #include <writer.h>
 
 #endif /* NESLA_COMMON_H_ */
