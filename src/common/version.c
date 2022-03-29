@@ -21,7 +21,7 @@
 
 /*!
  * @file version.c
- * @brief Global version.
+ * @brief Common version.
  */
 
 #include <common.h>

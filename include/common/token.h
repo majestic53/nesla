@@ -21,7 +21,7 @@
 
 /*!
  * @file token.h
- * @brief Token.
+ * @brief Common token.
  */
 
 #ifndef NESLA_TOKEN_H_
@@ -60,13 +60,13 @@ typedef struct {
     union {
 
         struct {
-            const char *data;   /*!< Token literal */
+            char *data;         /*!< Token literal */
             size_t capacity;    /*!< Token literal capacity */
             size_t length;      /*!< Token literal length */
         } literal;
 
         uint16_t scalar;        /*!< Token scalar */
-    } value;
+    };
 } nesla_token_t;
 
 #ifdef __cplusplus
@@ -75,70 +75,84 @@ extern "C" {
 
 /*!
  * @brief Allocate token context.
- * @param token Pointer to token context
- * @param type Token type
- * @param subtype Token subtype
- * @param path Constant pointer to token path
- * @param column Token column
- * @param row Token row
+ * @param[in,out] token Pointer to token context
+ * @param[in] type Token type
+ * @param[in] subtype Token subtype
+ * @param[in] path Constant pointer to token path
+ * @param[in] column Token column
+ * @param[in] row Token row
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 nesla_error_e nesla_token_allocate(nesla_token_t *token, nesla_token_e type, int subtype, const char *path, size_t column, size_t row);
 
 /*!
  * @brief Append character to literal in token context.
- * @param token Pointer to token context
- * @param value Token literal character
+ * @param[in,out] token Pointer to token context
+ * @param[in] value Token literal character
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 nesla_error_e nesla_token_append_literal(nesla_token_t *token, char value);
 
 /*!
  * @brief Free token context.
- * @param token Pointer to token context
+ * @param[in,out] token Pointer to token context
  */
 void nesla_token_free(nesla_token_t *token);
 
 /*!
  * @brief Get token context column.
- * @param token Pointer to token context
+ * @param[in] token Pointer to token context
  * @return Token context column
  */
-size_t nesla_token_column(nesla_token_t *token);
+size_t nesla_token_get_column(const nesla_token_t *token);
 
 /*!
  * @brief Get token context literal value.
- * @param token Pointer to token context
- * @param length Pointer to token literal length buffer
+ * @param[in] token Pointer to token context
+ * @param[out] length Pointer to token literal length buffer
  * @return Constant pointer to token context literal value
  */
-const char *nesla_token_get_literal(nesla_token_t *token, size_t *length);
+const char *nesla_token_get_literal(const nesla_token_t *token, size_t *length);
 
 /*!
  * @brief Get token context path.
- * @param token Pointer to token context
+ * @param[in] token Pointer to token context
  * @return Constant pointer to token context path
  */
-const char *nesla_token_get_path(nesla_token_t *token);
+const char *nesla_token_get_path(const nesla_token_t *token);
 
 /*!
  * @brief Get token context row.
- * @param token Pointer to token context
+ * @param[in] token Pointer to token context
  * @return Token context row
  */
-size_t nesla_token_row(nesla_token_t *token);
+size_t nesla_token_get_row(const nesla_token_t *token);
 
 /*!
  * @brief Get token context scalar value.
- * @param token Pointer to token context
+ * @param[in] token Pointer to token context
  * @return Token context scalar value
  */
-uint16_t nesla_token_get_scalar(nesla_token_t *token);
+uint16_t nesla_token_get_scalar(const nesla_token_t *token);
+
+/*!
+ * @brief Get token context subtype.
+ * @param[in] token Pointer to token context
+ * @return Token context subtype
+ */
+int nesla_token_get_subtype(const nesla_token_t *token);
+
+/*!
+ * @brief Get token context type.
+ * @param[in] token Pointer to token context
+ * @return Token context type
+ */
+nesla_token_e nesla_token_get_type(const nesla_token_t *token);
 
 /*!
  * @brief Set token context scalar value.
- * @param token Pointer to token context
- * @param value Token context scalar value
+ * @param[in,out] token Pointer to token context
+ * @param[in] value Token context scalar value
  */
 void nesla_token_set_scalar(nesla_token_t *token, uint16_t value);
 

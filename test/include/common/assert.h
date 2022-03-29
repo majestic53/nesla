@@ -21,7 +21,7 @@
 
 /*!
  * @file assert.h
- * @brief Test assertion.
+ * @brief Common test assertion.
  */
 
 #ifndef NESLA_TEST_ASSERT_H_

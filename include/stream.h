@@ -21,7 +21,7 @@
 
 /*!
  * @file stream.h
- * @brief NESLA stream.
+ * @brief Character stream.
  */
 
 #ifndef NESLA_STREAM_H_

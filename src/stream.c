@@ -21,7 +21,7 @@
 
 /*!
  * @file stream.c
- * @brief NESLA stream.
+ * @brief Character stream.
  */
 
 #include <stream.h>

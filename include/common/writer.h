@@ -21,7 +21,7 @@
 
 /*!
  * @file writer.h
- * @brief File writer.
+ * @brief Common file writer.
  */
 
 #ifndef NESLA_WRITER_H_

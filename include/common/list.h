@@ -21,7 +21,7 @@
 
 /*!
  * @file list.h
- * @brief Linked list.
+ * @brief Common linked list.
  */
 
 #ifndef NESLA_LIST_H_

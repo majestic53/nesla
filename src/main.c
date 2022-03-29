@@ -21,7 +21,7 @@
 
 /*!
  * @file main.c
- * @brief NESLA launcher application.
+ * @brief Launcher.
  */
 
 #include <getopt.h>

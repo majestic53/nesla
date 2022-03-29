@@ -21,7 +21,7 @@
 
 /*!
  * @file list.c
- * @brief Linked list.
+ * @brief Common linked list.
  */
 
 #include <common.h>
@@ -70,7 +70,7 @@ nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, c
     nesla_error_e result = NESLA_SUCCESS;
 
     if(!(new_entry = calloc(1, sizeof(*new_entry)))) {
-        result = SET_ERROR("Failed to allocate list entry: %s", strerror(errno));
+        result = SET_ERROR("Failed to allocate list entry: %p", new_entry);
         goto exit;
     }
 

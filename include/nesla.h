@@ -21,7 +21,7 @@
 
 /*!
  * @file nesla.h
- * @brief NESLA interface.
+ * @brief Public interface.
  */
 
 #ifndef NESLA_H_

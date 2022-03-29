@@ -21,7 +21,7 @@
 
 /*!
  * @file reader.h
- * @brief File reader.
+ * @brief Common file reader.
  */
 
 #ifndef NESLA_READER_H_

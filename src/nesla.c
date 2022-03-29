@@ -21,7 +21,7 @@
 
 /*!
  * @file nesla.c
- * @brief NESLA interface.
+ * @brief Public interface.
  */
 
 #include <common.h>

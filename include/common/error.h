@@ -21,7 +21,7 @@
 
 /*!
  * @file error.h
- * @brief Global error.
+ * @brief Common error.
  */
 
 #ifndef NESLA_ERROR_H_
