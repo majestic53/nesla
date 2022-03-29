@@ -54,6 +54,13 @@ extern "C" {
 #endif /* __cplusplus */
 
 /*!
+ * @brief Clear list context.
+ * @param[in,out] list Pointer to list context
+ * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
+ */
+nesla_error_e nesla_list_clear(nesla_list_t *list);
+
+/*!
  * @brief Get list entry context at index.
  * @param[in] list Pointer to list context
  * @param[in] index Entry index
@@ -99,13 +106,6 @@ nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, c
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 nesla_error_e nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry);
-
-/*!
- * @brief Reset list context.
- * @param[in,out] list Pointer to list context
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_list_reset(nesla_list_t *list);
 
 #ifdef __cplusplus
 }
