@@ -61,7 +61,7 @@ extern "C" {
  * @param[in,out] stream Constant pointer to stream context
  * @return Stream character
  */
-char nesla_stream_get(const nesla_stream_t *stream);
+uint8_t nesla_stream_get(const nesla_stream_t *stream);
 
 /*!
  * @brief Get stream context column.

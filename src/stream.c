@@ -30,9 +30,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-char nesla_stream_get(const nesla_stream_t *stream)
+uint8_t nesla_stream_get(const nesla_stream_t *stream)
 {
-    return (char)stream->character;
+    return stream->character;
 }
 
 size_t nesla_stream_get_column(const nesla_stream_t *stream)
