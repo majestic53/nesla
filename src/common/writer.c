@@ -37,7 +37,7 @@ void nesla_writer_close(nesla_writer_t *writer)
         fclose(writer->offset);
     }
 
-    if(writer->base) {
+    if(writer->base && (writer->base != writer->offset)) {
         fclose(writer->base);
     }
 
@@ -54,14 +54,14 @@ nesla_error_e nesla_writer_get_size(nesla_writer_t *writer, size_t *size)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(writer->base, 0, SEEK_END)) {
-        result = SET_ERROR("Failed to seek file end: %p", writer->base);
+        result = SET_ERROR("Failed to seek file end: %s", writer->path);
         goto exit;
     }
 
     *size = ftell(writer->base);
 
     if(fseek(writer->base, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file end: %p", writer->base);
+        result = SET_ERROR("Failed to seek file end: %s", writer->path);
         goto exit;
     }
 
@@ -79,7 +79,7 @@ nesla_error_e nesla_writer_open(nesla_writer_t *writer, const char *path, bool c
     }
 
     if(!(writer->offset = freopen(path, create ? "wb" : "wbx", writer->base))) {
-        result = SET_ERROR("Failed to duplicate file pointer: %p", writer->offset);
+        result = SET_ERROR("Failed to duplicate file pointer: %s", path);
         goto exit;
     }
 
@@ -94,7 +94,7 @@ nesla_error_e nesla_writer_put(nesla_writer_t *writer, const uint8_t *data, size
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fwrite(data, sizeof(*data), length, writer->offset) != length) {
-        result = SET_ERROR("Failed to write file: %.02f KB (%zu bytes)", length / 1024.f, length);
+        result = SET_ERROR("Failed to write file: %s", writer->path);
         goto exit;
     }
 
@@ -107,12 +107,12 @@ nesla_error_e nesla_writer_reset(nesla_writer_t *writer)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(writer->base, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file set: %p", writer->base);
+        result = SET_ERROR("Failed to seek file set: %s", writer->path);
         goto exit;
     }
 
     if(fseek(writer->offset, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file set: %p", writer->offset);
+        result = SET_ERROR("Failed to seek file set: %s", writer->path);
         goto exit;
     }
 

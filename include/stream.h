@@ -34,8 +34,7 @@
  * @brief Character type.
  */
 typedef enum {
-    CHARACTER_END = 0,      /*!< End-of-file character */
-    CHARACTER_ALPHA,        /*!< Alpha character */
+    CHARACTER_ALPHA = 0,    /*!< Alpha character */
     CHARACTER_DIGIT,        /*!< Digit character */
     CHARACTER_SYMBOL,       /*!< Symbol character */
     CHARACTER_WHITESPACE,   /*!< Whitespace character */
@@ -48,8 +47,7 @@ typedef enum {
 typedef struct {
     nesla_reader_t reader;  /*!< Reader context */
     uint8_t character;      /*!< Current character */
-    size_t column;          /*!< Current column */
-    size_t row;             /*!< Current row */
+    size_t line;            /*!< Current line */
 } nesla_stream_t;
 
 #ifdef __cplusplus
@@ -64,11 +62,11 @@ extern "C" {
 uint8_t nesla_stream_get(const nesla_stream_t *stream);
 
 /*!
- * @brief Get stream context column.
+ * @brief Get stream context line.
  * @param[in,out] stream Constant pointer to stream context
- * @return Stream column
+ * @return Stream line
  */
-size_t nesla_stream_get_column(const nesla_stream_t *stream);
+size_t nesla_stream_get_line(const nesla_stream_t *stream);
 
 /*!
  * @brief Get stream context file path.
@@ -76,13 +74,6 @@ size_t nesla_stream_get_column(const nesla_stream_t *stream);
  * @return File path
  */
 const char *nesla_stream_get_path(const nesla_stream_t *stream);
-
-/*!
- * @brief Get stream context row.
- * @param[in,out] stream Constant pointer to stream context
- * @return Stream row
- */
-size_t nesla_stream_get_row(const nesla_stream_t *stream);
 
 /*!
  * @brief Get stream context character type.

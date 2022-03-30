@@ -37,7 +37,7 @@ void nesla_reader_close(nesla_reader_t *reader)
         fclose(reader->offset);
     }
 
-    if(reader->base) {
+    if(reader->base && (reader->base != reader->offset)) {
         fclose(reader->base);
     }
 
@@ -49,7 +49,7 @@ nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data, size_t len
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fread(data, sizeof(*data), length, reader->offset) != length) {
-        result = SET_ERROR("Failed to read file: %.02f KB (%zu bytes)", length / 1024.f, length);
+        result = SET_ERROR("Failed to read file: %s", reader->path);
         goto exit;
     }
 
@@ -67,14 +67,14 @@ nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(reader->base, 0, SEEK_END)) {
-        result = SET_ERROR("Failed to seek file end: %p", reader->base);
+        result = SET_ERROR("Failed to seek file end: %s", reader->path);
         goto exit;
     }
 
     *size = ftell(reader->base);
 
     if(fseek(reader->base, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file end: %p", reader->base);
+        result = SET_ERROR("Failed to seek file end: %s", reader->path);
         goto exit;
     }
 
@@ -92,7 +92,7 @@ nesla_error_e nesla_reader_open(nesla_reader_t *reader, const char *path)
     }
 
     if(!(reader->offset = freopen(path, "rb", reader->base))) {
-        result = SET_ERROR("Failed to duplicate file pointer: %p", reader->offset);
+        result = SET_ERROR("Failed to duplicate file pointer: %s", path);
         goto exit;
     }
 
@@ -107,12 +107,12 @@ nesla_error_e nesla_reader_reset(nesla_reader_t *reader)
     nesla_error_e result = NESLA_SUCCESS;
 
     if(fseek(reader->base, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file set: %p", reader->base);
+        result = SET_ERROR("Failed to seek file set: %s", reader->path);
         goto exit;
     }
 
     if(fseek(reader->offset, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file set: %p", reader->offset);
+        result = SET_ERROR("Failed to seek file set: %s", reader->path);
         goto exit;
     }
 

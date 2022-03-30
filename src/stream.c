@@ -35,9 +35,9 @@ uint8_t nesla_stream_get(const nesla_stream_t *stream)
     return stream->character;
 }
 
-size_t nesla_stream_get_column(const nesla_stream_t *stream)
+size_t nesla_stream_get_line(const nesla_stream_t *stream)
 {
-    return stream->column;
+    return stream->line;
 }
 
 const char *nesla_stream_get_path(const nesla_stream_t *stream)
@@ -45,18 +45,11 @@ const char *nesla_stream_get_path(const nesla_stream_t *stream)
     return nesla_reader_get_path(&stream->reader);
 }
 
-size_t nesla_stream_get_row(const nesla_stream_t *stream)
-{
-    return stream->row;
-}
-
 nesla_character_e nesla_stream_get_type(const nesla_stream_t *stream)
 {
     nesla_character_e result = CHARACTER_SYMBOL;
 
-    if(stream->character == '\0') {
-        result = CHARACTER_END;
-    } else if(isalpha(stream->character)) {
+    if(isalpha(stream->character)) {
         result = CHARACTER_ALPHA;
     } else if(isdigit(stream->character)) {
         result = CHARACTER_DIGIT;
@@ -94,17 +87,13 @@ exit:
 nesla_error_e nesla_stream_next(nesla_stream_t *stream)
 {
 
-    if(nesla_stream_get_type(stream) != CHARACTER_END) {
+    if(stream->character != '\0') {
 
         if(stream->character == '\n') {
-            stream->column = 0;
-            ++stream->row;
-        } else {
-            ++stream->column;
+            ++stream->line;
         }
     } else {
-        stream->column = 0;
-        stream->row = 0;
+        stream->line = 1;
     }
 
     return nesla_reader_get(&stream->reader, &stream->character, 1);

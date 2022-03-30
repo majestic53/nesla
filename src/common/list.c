@@ -30,23 +30,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-nesla_error_e nesla_list_clear(nesla_list_t *list)
-{
-    nesla_error_e result = NESLA_SUCCESS;
-
-    while(list->size) {
-
-        if((result = nesla_list_remove(list, list->tail)) == NESLA_FAILURE) {
-            goto exit;
-        }
-    }
-
-    memset(list, 0, sizeof(*list));
-
-exit:
-    return result;
-}
-
 nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_entry_t **entry)
 {
     nesla_error_e result = NESLA_SUCCESS;
@@ -81,7 +64,7 @@ nesla_list_entry_t *nesla_list_get_tail(const nesla_list_t *list)
     return list->tail;
 }
 
-nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, const void *context)
+nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, void *context)
 {
     nesla_list_entry_t *new_entry;
     nesla_error_e result = NESLA_SUCCESS;
@@ -131,14 +114,8 @@ exit:
     return result;
 }
 
-nesla_error_e nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry)
+void nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry)
 {
-    nesla_error_e result = NESLA_SUCCESS;
-
-    if(!list->size) {
-        result = SET_ERROR("Empty list: %zu", list->size);
-        goto exit;
-    }
 
     if(entry == list->head) {
 
@@ -161,9 +138,6 @@ nesla_error_e nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry)
 
     free(entry);
     --list->size;
-
-exit:
-    return result;
 }
 
 #ifdef __cplusplus

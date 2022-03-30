@@ -26,6 +26,10 @@
 
 #include <common.h>
 
+/* TODO: DEBUGGING */
+#include <lexer.h>
+/* --- */
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -34,7 +38,16 @@ nesla_error_e nesla(const nesla_t *context)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    /* TODO */
+    /* TODO: DEBUGGING */
+    nesla_lexer_t lex = {};
+
+    if((result = nesla_lexer_initialize(&lex, context->input)) == NESLA_FAILURE) {
+        goto exit;
+    }
+
+exit:
+    nesla_lexer_uninitialize(&lex);
+    /* --- */
 
     return result;
 }

@@ -36,7 +36,7 @@
 typedef struct nesla_list_entry_s {
     struct nesla_list_entry_s *next;        /*!< Next entry */
     struct nesla_list_entry_s *previous;    /*!< Previous entry */
-    const void *context;                    /*!< Entry context */
+    void *context;                          /*!< Entry context */
 } nesla_list_entry_t;
 
 /*!
@@ -52,13 +52,6 @@ typedef struct {
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-/*!
- * @brief Clear list context.
- * @param[in,out] list Pointer to list context
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_list_clear(nesla_list_t *list);
 
 /*!
  * @brief Get list entry context at index.
@@ -94,18 +87,17 @@ nesla_list_entry_t *nesla_list_get_tail(const nesla_list_t *list);
  * @brief Insert context into list context after list entry context.
  * @param[in,out] list Pointer to list context
  * @param[in,out] entry Pointer to list entry context to insert after, or NULL
- * @param[in] context Constant pointer to context
+ * @param[in] context Pointer to context
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, const void *context);
+nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, void *context);
 
 /*!
  * @brief Remove list entry context from list context.
  * @param[in,out] list Pointer to list context
  * @param[in,out] entry Pointer to list entry context
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry);
+void nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry);
 
 #ifdef __cplusplus
 }

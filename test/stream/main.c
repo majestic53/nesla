@@ -27,7 +27,7 @@
 #include <stream.h>
 #include <test.h>
 
-#define TEST_DATA "abc\n012\n.,;\n   \0"
+#define TEST_DATA "abc\n012\n.,;\n   "
 #define TEST_PATH "test.asm"
 
 /*!
@@ -40,7 +40,7 @@ typedef struct {
     struct {
         const char *data;           /*!< Reader data */
         const char *path;           /*!< Reader path */
-        size_t position;            /*!< Reader position */
+        size_t index;               /*!< Reader index */
         bool open;                  /*!< Reader open */
         bool reset;                 /*!< Reader reset */
     } reader;
@@ -66,12 +66,12 @@ nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data, size_t len
 
     if((reader != &g_test.stream.reader)
             || (length != 1)
-            || (g_test.reader.position >= strlen(g_test.reader.data))) {
+            || (g_test.reader.index >= strlen(g_test.reader.data))) {
         result = NESLA_FAILURE;
         goto exit;
     }
 
-    *data = g_test.reader.data[g_test.reader.position++];
+    *data = g_test.reader.data[g_test.reader.index++];
 
 exit:
     return result;
@@ -129,7 +129,7 @@ nesla_error_e nesla_reader_reset(nesla_reader_t *reader)
         goto exit;
     }
 
-    g_test.reader.position = 0;
+    g_test.reader.index = 0;
     g_test.reader.reset = true;
 
 exit:
@@ -169,9 +169,7 @@ static nesla_character_e nesla_test_type(uint8_t character)
 {
     nesla_character_e result = CHARACTER_SYMBOL;
 
-    if(character == '\0') {
-        result = CHARACTER_END;
-    } else if(isalpha(character)) {
+    if(isalpha(character)) {
         result = CHARACTER_ALPHA;
     } else if(isdigit(character)) {
         result = CHARACTER_DIGIT;
@@ -212,12 +210,12 @@ exit:
 }
 
 /*!
- * @brief Test stream get column.
+ * @brief Test stream get line.
  * @return NESLA_FAILURE on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_test_stream_get_column(void)
+static nesla_error_e nesla_test_stream_get_line(void)
 {
-    size_t column = 0;
+    size_t line = 1;
     nesla_error_e result = NESLA_SUCCESS;
 
     if(ASSERT(nesla_test_initialize(TEST_PATH, TEST_DATA) == NESLA_SUCCESS)) {
@@ -227,17 +225,15 @@ static nesla_error_e nesla_test_stream_get_column(void)
 
     for(size_t index = 0; index < strlen(TEST_DATA); ++index) {
 
-        if(ASSERT(nesla_stream_get_column(&g_test.stream) == column)) {
+        if(ASSERT(nesla_stream_get_line(&g_test.stream) == line)) {
             result = NESLA_FAILURE;
             goto exit;
         }
 
         nesla_stream_next(&g_test.stream);
 
-        if(TEST_DATA[index] != '\n') {
-            ++column;
-        } else {
-            column = 0;
+       if(TEST_DATA[index] == '\n') {
+            ++line;
         }
     }
 
@@ -263,40 +259,6 @@ static nesla_error_e nesla_test_stream_get_path(void)
     if(ASSERT(strcmp(nesla_stream_get_path(&g_test.stream), TEST_PATH) == 0)) {
         result = NESLA_FAILURE;
         goto exit;
-    }
-
-exit:
-    TEST_RESULT(result);
-
-    return result;
-}
-
-/*!
- * @brief Test stream get row.
- * @return NESLA_FAILURE on failure, NESLA_SUCCESS otherwise
- */
-static nesla_error_e nesla_test_stream_get_row(void)
-{
-    size_t row = 0;
-    nesla_error_e result = NESLA_SUCCESS;
-
-    if(ASSERT(nesla_test_initialize(TEST_PATH, TEST_DATA) == NESLA_SUCCESS)) {
-        result = NESLA_FAILURE;
-        goto exit;
-    }
-
-    for(size_t index = 0; index < strlen(TEST_DATA); ++index) {
-
-        if(ASSERT(nesla_stream_get_row(&g_test.stream) == row)) {
-            result = NESLA_FAILURE;
-            goto exit;
-        }
-
-        nesla_stream_next(&g_test.stream);
-
-       if(TEST_DATA[index] == '\n') {
-            ++row;
-        }
     }
 
 exit:
@@ -353,11 +315,10 @@ static nesla_error_e nesla_test_stream_initialize(void)
     }
 
     if(ASSERT((g_test.stream.character == TEST_DATA[0])
-            && (g_test.stream.column == 0)
-            && (g_test.stream.row == 0)
+            && (g_test.stream.line == 1)
             && (strcmp(g_test.reader.data, TEST_DATA) == 0)
             && (strcmp(g_test.reader.path, TEST_PATH) == 0)
-            && (g_test.reader.position == 1)
+            && (g_test.reader.index == 1)
             && (g_test.reader.open == true)
             && (g_test.reader.reset == true))) {
         result = NESLA_FAILURE;
@@ -386,7 +347,7 @@ static nesla_error_e nesla_test_stream_next(void)
 
     for(index = 0; index < strlen(TEST_DATA) - 1; ++index) {
 
-        if(ASSERT(g_test.reader.position == index + 1)) {
+        if(ASSERT(g_test.reader.index == index + 1)) {
             result = NESLA_FAILURE;
             goto exit;
         }
@@ -397,7 +358,7 @@ static nesla_error_e nesla_test_stream_next(void)
         }
     }
 
-    if(ASSERT((g_test.reader.position == index + 1)
+    if(ASSERT((g_test.reader.index == index + 1)
             && (nesla_stream_next(&g_test.stream) == NESLA_FAILURE))) {
         result = NESLA_FAILURE;
         goto exit;
@@ -435,11 +396,10 @@ static nesla_error_e nesla_test_stream_reset(void)
     nesla_stream_reset(&g_test.stream);
 
     if(ASSERT((g_test.stream.character == TEST_DATA[0])
-            && (g_test.stream.column == 0)
-            && (g_test.stream.row == 0)
+            && (g_test.stream.line == 1)
             && (strcmp(g_test.reader.data, TEST_DATA) == 0)
             && (strcmp(g_test.reader.path, TEST_PATH) == 0)
-            && (g_test.reader.position == 1)
+            && (g_test.reader.index == 1)
             && (g_test.reader.open == true)
             && (g_test.reader.reset == true))) {
         result = NESLA_FAILURE;
@@ -468,11 +428,10 @@ static nesla_error_e nesla_test_stream_uninitialize(void)
     nesla_stream_uninitialize(&g_test.stream);
 
     if(ASSERT((g_test.stream.character == '\0')
-            && (g_test.stream.column == 0)
-            && (g_test.stream.row == 0)
+            && (g_test.stream.line == 0)
             && (g_test.reader.data == NULL)
             && (g_test.reader.path == NULL)
-            && (g_test.reader.position == 0)
+            && (g_test.reader.index == 0)
             && (g_test.reader.open == false)
             && (g_test.reader.reset == false))) {
         result = NESLA_FAILURE;
@@ -489,9 +448,8 @@ int main(void)
 {
     static const test TEST[] = {
         nesla_test_stream_get,
-        nesla_test_stream_get_column,
+        nesla_test_stream_get_line,
         nesla_test_stream_get_path,
-        nesla_test_stream_get_row,
         nesla_test_stream_get_type,
         nesla_test_stream_initialize,
         nesla_test_stream_next,
