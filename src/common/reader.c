@@ -86,13 +86,9 @@ nesla_error_e nesla_reader_open(nesla_reader_t *reader, const char *path)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    if(!(reader->base = fopen(path, "rb"))) {
+    if(!(reader->base = fopen(path, "rb"))
+            || !(reader->offset = freopen(path, "rb", reader->base))) {
         result = SET_ERROR("Failed to open file: %s", path);
-        goto exit;
-    }
-
-    if(!(reader->offset = freopen(path, "rb", reader->base))) {
-        result = SET_ERROR("Failed to duplicate file pointer: %s", path);
         goto exit;
     }
 
@@ -106,12 +102,8 @@ nesla_error_e nesla_reader_reset(nesla_reader_t *reader)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    if(fseek(reader->base, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file set: %s", reader->path);
-        goto exit;
-    }
-
-    if(fseek(reader->offset, 0, SEEK_SET)) {
+    if(fseek(reader->base, 0, SEEK_SET)
+            || fseek(reader->offset, 0, SEEK_SET)) {
         result = SET_ERROR("Failed to seek file set: %s", reader->path);
         goto exit;
     }

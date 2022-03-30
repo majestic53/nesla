@@ -55,7 +55,7 @@ nesla_error_e nesla_literal_append(nesla_literal_t *literal, uint8_t value)
         literal->capacity *= 2;
 
         if(!(literal->buffer = realloc(literal->buffer, literal->capacity * sizeof(uint8_t)))) {
-            result = SET_ERROR("Failed to reallocate literal: %p", literal->buffer);
+            result = SET_ERROR("Failed to allocate literal: %p", literal->buffer);
             goto exit;
         }
     }

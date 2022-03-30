@@ -73,13 +73,9 @@ nesla_error_e nesla_writer_open(nesla_writer_t *writer, const char *path, bool c
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    if(!(writer->base = fopen(path, create ? "wb" : "wbx"))) {
+    if(!(writer->base = fopen(path, create ? "wb" : "wbx"))
+            || !(writer->offset = freopen(path, create ? "wb" : "wbx", writer->base))) {
         result = SET_ERROR("Failed to open file: %s", path);
-        goto exit;
-    }
-
-    if(!(writer->offset = freopen(path, create ? "wb" : "wbx", writer->base))) {
-        result = SET_ERROR("Failed to duplicate file pointer: %s", path);
         goto exit;
     }
 
@@ -106,12 +102,8 @@ nesla_error_e nesla_writer_reset(nesla_writer_t *writer)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    if(fseek(writer->base, 0, SEEK_SET)) {
-        result = SET_ERROR("Failed to seek file set: %s", writer->path);
-        goto exit;
-    }
-
-    if(fseek(writer->offset, 0, SEEK_SET)) {
+    if(fseek(writer->base, 0, SEEK_SET)
+            || fseek(writer->offset, 0, SEEK_SET)) {
         result = SET_ERROR("Failed to seek file set: %s", writer->path);
         goto exit;
     }
