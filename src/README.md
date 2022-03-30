@@ -1,10 +1,10 @@
-# NESLA (NESL-Assembler) Sources
+## NESLA (NESL-Assembler) Sources
 
-## Formal Grammar
+### Formal Grammar
 
 See the formal grammar, under [`docs/grammar.md`](../docs/grammar.md).
 
-## File layout
+### File layout
 
 Source files are placed into subdirectories, under `src/`.
 
@@ -13,11 +13,11 @@ Source files are placed into subdirectories, under `src/`.
 |`src/common`|Common source files   |
 |`src/`      |Assembler source files|
 
-## Coding style
+### Coding style
 
 This project uses the following coding style:
 
-### Enumerations
+#### Enumerations
 
 ```c
 /*!
@@ -31,7 +31,7 @@ typedef enum {
 } nesla_xxx_e;
 ```
 
-### Structures
+#### Structures
 
 ```c
 /*!
@@ -45,7 +45,7 @@ typedef struct {
 } nesla_xxx_t;
 ```
 
-### Functions
+#### Functions
 
 ```c
 #ifdef __cplusplus

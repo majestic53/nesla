@@ -1,11 +1,11 @@
-# NESLA (NESL-Assembler) Grammar
+## NESLA (NESL-Assembler) Grammar
 
-## Lexer Grammar
+### Lexer Grammar
 
 ```
 COMMENT             ::= ;.*\n
 
-DIRECTIVE           ::= .[BANK|BIN|BYTE|CHR|DEF|INC|MAP|MIR|ORG|PRG|RESV|UNDEF|WORD]
+DIRECTIVE           ::= .[BANK|BYTE|CHR|DEF|INC|INCB|MAP|MIR|ORG|PRG|RESV|UNDEF|WORD]
 
 IDENTIFIER          ::= [_A-Z][_A-Z0-9]
 
@@ -29,7 +29,7 @@ SCALAR              ::= &[0-1]{1-8}|[0-9]{1-5}|$[A-F0-9]{1-2}
 SYMBOL              ::= ,#()
 ```
 
-## Parser Grammar
+### Parser Grammar
 
 ```
 TBD
