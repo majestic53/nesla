@@ -57,12 +57,7 @@ exit:
     return result;
 }
 
-const char *nesla_reader_get_path(const nesla_reader_t *reader)
-{
-    return reader->path;
-}
-
-nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
+nesla_error_e nesla_reader_get_length(nesla_reader_t *reader, size_t *length)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
@@ -71,7 +66,7 @@ nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
         goto exit;
     }
 
-    *size = ftell(reader->base);
+    *length = ftell(reader->base);
 
     if(fseek(reader->base, 0, SEEK_SET)) {
         result = SET_ERROR("Failed to seek file end: %s", reader->path);
@@ -80,6 +75,11 @@ nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
 
 exit:
     return result;
+}
+
+const char *nesla_reader_get_path(const nesla_reader_t *reader)
+{
+    return reader->path;
 }
 
 nesla_error_e nesla_reader_open(nesla_reader_t *reader, const char *path)

@@ -59,19 +59,19 @@ void nesla_reader_close(nesla_reader_t *reader);
 nesla_error_e nesla_reader_get(nesla_reader_t *reader, uint8_t *data, size_t length);
 
 /*!
+ * @brief Get reader context file length.
+ * @param[in,out] reader Pointer to reader context
+ * @param[in,out] length File length in bytes
+ * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
+ */
+nesla_error_e nesla_reader_get_length(nesla_reader_t *reader, size_t *length);
+
+/*!
  * @brief Get reader context file path.
  * @param[in] reader Pointer to reader context
  * @return File path
  */
 const char *nesla_reader_get_path(const nesla_reader_t *reader);
-
-/*!
- * @brief Get reader context file size.
- * @param[in,out] reader Pointer to reader context
- * @param[in,out] size File size in bytes
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size);
 
 /*!
  * @brief Open reader context with a path.

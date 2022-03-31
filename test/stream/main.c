@@ -77,17 +77,7 @@ exit:
     return result;
 }
 
-const char *nesla_reader_get_path(const nesla_reader_t *reader)
-{
-
-    if(reader != &g_test.stream.reader) {
-        return NULL;
-    }
-
-    return g_test.reader.path;
-}
-
-nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
+nesla_error_e nesla_reader_get_length(nesla_reader_t *reader, size_t *length)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
@@ -96,10 +86,20 @@ nesla_error_e nesla_reader_get_size(nesla_reader_t *reader, size_t *size)
         goto exit;
     }
 
-    *size = strlen(g_test.reader.data);
+    *length = strlen(g_test.reader.data);
 
 exit:
     return result;
+}
+
+const char *nesla_reader_get_path(const nesla_reader_t *reader)
+{
+
+    if(reader != &g_test.stream.reader) {
+        return NULL;
+    }
+
+    return g_test.reader.path;
 }
 
 nesla_error_e nesla_reader_open(nesla_reader_t *reader, const char *path)

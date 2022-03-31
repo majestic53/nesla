@@ -44,12 +44,7 @@ void nesla_writer_close(nesla_writer_t *writer)
     memset(writer, 0, sizeof(*writer));
 }
 
-const char *nesla_writer_get_path(const nesla_writer_t *writer)
-{
-    return writer->path;
-}
-
-nesla_error_e nesla_writer_get_size(nesla_writer_t *writer, size_t *size)
+nesla_error_e nesla_writer_get_length(nesla_writer_t *writer, size_t *length)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
@@ -58,7 +53,7 @@ nesla_error_e nesla_writer_get_size(nesla_writer_t *writer, size_t *size)
         goto exit;
     }
 
-    *size = ftell(writer->base);
+    *length = ftell(writer->base);
 
     if(fseek(writer->base, 0, SEEK_SET)) {
         result = SET_ERROR("Failed to seek file end: %s", writer->path);
@@ -67,6 +62,11 @@ nesla_error_e nesla_writer_get_size(nesla_writer_t *writer, size_t *size)
 
 exit:
     return result;
+}
+
+const char *nesla_writer_get_path(const nesla_writer_t *writer)
+{
+    return writer->path;
 }
 
 nesla_error_e nesla_writer_open(nesla_writer_t *writer, const char *path, bool create)

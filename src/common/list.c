@@ -34,7 +34,7 @@ nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_
 {
     nesla_error_e result = NESLA_SUCCESS;
 
-    if(index >= list->size) {
+    if(index >= list->length) {
         result = SET_ERROR("Invalid index: %zu", index);
         goto exit;
     }
@@ -54,9 +54,9 @@ nesla_list_entry_t *nesla_list_get_head(const nesla_list_t *list)
     return list->head;
 }
 
-size_t nesla_list_get_size(const nesla_list_t *list)
+size_t nesla_list_get_length(const nesla_list_t *list)
 {
-    return list->size;
+    return list->length;
 }
 
 nesla_list_entry_t *nesla_list_get_tail(const nesla_list_t *list)
@@ -103,7 +103,7 @@ nesla_error_e nesla_list_insert(nesla_list_t *list, nesla_list_entry_t *entry, v
         entry->next = new_entry;
     }
 
-    ++list->size;
+    ++list->length;
 
 exit:
 
@@ -137,7 +137,7 @@ void nesla_list_remove(nesla_list_t *list, nesla_list_entry_t *entry)
     }
 
     free(entry);
-    --list->size;
+    --list->length;
 }
 
 #ifdef __cplusplus

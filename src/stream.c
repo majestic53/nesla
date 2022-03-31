@@ -62,18 +62,18 @@ nesla_character_e nesla_stream_get_type(const nesla_stream_t *stream)
 
 nesla_error_e nesla_stream_initialize(nesla_stream_t *stream, const char *path)
 {
-    size_t size = 0;
+    size_t length = 0;
     nesla_error_e result;
 
     if((result = nesla_reader_open(&stream->reader, path)) == NESLA_FAILURE) {
         goto exit;
     }
 
-    if((result = nesla_reader_get_size(&stream->reader, &size)) == NESLA_FAILURE) {
+    if((result = nesla_reader_get_length(&stream->reader, &length)) == NESLA_FAILURE) {
         goto exit;
     }
 
-    if(!size) {
+    if(!length) {
         result = SET_ERROR("Empty file: %s", path);
         goto exit;
     }

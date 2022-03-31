@@ -46,7 +46,7 @@ typedef struct nesla_list_entry_s {
 typedef struct {
     nesla_list_entry_t *head;               /*!< Head entry */
     nesla_list_entry_t *tail;               /*!< Tail entry */
-    size_t size;                            /*!< Entries */
+    size_t length;                          /*!< Entry count */
 } nesla_list_t;
 
 #ifdef __cplusplus
@@ -70,11 +70,11 @@ nesla_error_e nesla_list_get(const nesla_list_t *list, size_t index, nesla_list_
 nesla_list_entry_t *nesla_list_get_head(const nesla_list_t *list);
 
 /*!
- * @brief Get list size.
+ * @brief Get list length.
  * @param[in] list Pointer to list context
- * @return List size
+ * @return List length
  */
-size_t nesla_list_get_size(const nesla_list_t *list);
+size_t nesla_list_get_length(const nesla_list_t *list);
 
 /*!
  * @brief Get list entry context at tail.

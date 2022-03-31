@@ -39,14 +39,14 @@ nesla_error_e nesla(const nesla_t *context)
     nesla_error_e result = NESLA_SUCCESS;
 
     /* TODO: DEBUGGING */
-    nesla_lexer_t lex = {};
+    nesla_lexer_t lexer = {};
 
-    if((result = nesla_lexer_initialize(&lex, context->input)) == NESLA_FAILURE) {
+    if((result = nesla_lexer_initialize(&lexer, context->input)) == NESLA_FAILURE) {
         goto exit;
     }
 
 exit:
-    nesla_lexer_uninitialize(&lex);
+    nesla_lexer_uninitialize(&lexer);
     /* --- */
 
     return result;
