@@ -41,14 +41,9 @@ size_t nesla_token_get_line(const nesla_token_t *token)
     return token->line;
 }
 
-const uint8_t *nesla_token_get_literal(const nesla_token_t *token)
+const nesla_literal_t *nesla_token_get_literal(const nesla_token_t *token)
 {
-    return nesla_literal_get(&token->literal);
-}
-
-size_t nesla_token_get_literal_length(const nesla_token_t *token)
-{
-    return nesla_literal_get_length(&token->literal);
+    return &token->literal;
 }
 
 const char *nesla_token_get_path(const nesla_token_t *token)
@@ -81,14 +76,13 @@ void nesla_token_set(nesla_token_t *token, nesla_token_e type, int subtype, cons
 
 nesla_error_e nesla_token_set_literal(nesla_token_t *token, const nesla_literal_t *literal)
 {
-    nesla_error_e result;
+    nesla_error_e result = NESLA_SUCCESS;
 
-    if((result = nesla_literal_allocate(&token->literal)) == NESLA_FAILURE) {
-        goto exit;
-    }
+    for(size_t index = 0; index < nesla_literal_get_length(literal); ++index) {
 
-    if((result = nesla_literal_copy(&token->literal, literal)) == NESLA_FAILURE) {
-        goto exit;
+        if((result = nesla_literal_append(&token->literal, nesla_literal_get(literal)[index])) == NESLA_FAILURE) {
+            goto exit;
+        }
     }
 
 exit:

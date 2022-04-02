@@ -51,7 +51,9 @@ nesla_error_e nesla_set_error(const char *file, const char *function, int line, 
 
     va_start(arguments, format);
     vsnprintf(g_error.buffer, sizeof(g_error.buffer), format, arguments);
+#ifdef DEBUG
     snprintf(g_error.buffer + strlen(g_error.buffer), sizeof(g_error.buffer) - strlen(g_error.buffer), " (%s:%s@%i)", function, file, line);
+#endif /* DEBUG */
     va_end(arguments);
 
     return NESLA_FAILURE;

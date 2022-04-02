@@ -30,7 +30,12 @@
 export "C" {
 #endif /* __cplusplus */
 
-nesla_error_e nesla_literal_allocate(nesla_literal_t *literal)
+/*!
+ * @brief Allocate literal context.
+ * @param[in,out] literal Pointer to literal context
+ * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
+ */
+static nesla_error_e nesla_literal_allocate(nesla_literal_t *literal)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
@@ -51,6 +56,10 @@ nesla_error_e nesla_literal_append(nesla_literal_t *literal, uint8_t value)
 {
     nesla_error_e result = NESLA_SUCCESS;
 
+    if(!literal->buffer && ((result = nesla_literal_allocate(literal)) == NESLA_FAILURE)) {
+        goto exit;
+    }
+
     if(literal->length + 1 >= literal->capacity) {
         literal->capacity *= 2;
 
@@ -61,21 +70,6 @@ nesla_error_e nesla_literal_append(nesla_literal_t *literal, uint8_t value)
     }
 
     literal->buffer[literal->length++] = value;
-
-exit:
-    return result;
-}
-
-nesla_error_e nesla_literal_copy(nesla_literal_t *literal, const nesla_literal_t *value)
-{
-    nesla_error_e result = NESLA_SUCCESS;
-
-    for(size_t index = 0; index < value->length; ++index) {
-
-        if((result = nesla_literal_append(literal, value->buffer[index])) == NESLA_FAILURE) {
-            goto exit;
-        }
-    }
 
 exit:
     return result;

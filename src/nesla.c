@@ -45,6 +45,19 @@ nesla_error_e nesla(const nesla_t *context)
         goto exit;
     }
 
+    do {
+        nesla_token_t *token;
+
+        if((result = nesla_lexer_get(&lexer, &token)) == NESLA_FAILURE) {
+            goto exit;
+        }
+
+        fprintf(stdout, "[%i:%i] \'%c\' (%s@%zu)\n",
+            nesla_token_get_type(token), nesla_token_get_subtype(token),
+            nesla_literal_get(nesla_token_get_literal(token))[0],
+            nesla_token_get_path(token), nesla_token_get_line(token));
+    } while(nesla_lexer_next(&lexer) == NESLA_SUCCESS);
+
 exit:
     nesla_lexer_uninitialize(&lexer);
     /* --- */

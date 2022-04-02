@@ -77,16 +77,9 @@ size_t nesla_token_get_line(const nesla_token_t *token);
 /*!
  * @brief Get token context literal value.
  * @param[in] token Constant pointer to token context
- * @return Constant pointer to literal value
+ * @return Constant pointer to literal context
  */
-const uint8_t *nesla_token_get_literal(const nesla_token_t *token);
-
-/*!
- * @brief Get token context literal length.
- * @param[in] token Constant pointer to token context
- * @return Literal length
- */
-size_t nesla_token_get_literal_length(const nesla_token_t *token);
+const nesla_literal_t *nesla_token_get_literal(const nesla_token_t *token);
 
 /*!
  * @brief Get token context file path.

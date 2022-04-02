@@ -46,10 +46,10 @@ extern "C" {
 /*!
  * @brief Get lexer context token.
  * @param[in,out] lexer Constant pointer to lexer context
- * @param[in,out] token Constant pointer to token context
+ * @param[in,out] token Pointer to token context
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-nesla_error_e nesla_lexer_get(const nesla_lexer_t *lexer, const nesla_token_t **token);
+nesla_error_e nesla_lexer_get(const nesla_lexer_t *lexer, nesla_token_t **token);
 
 /*!
  * @brief Initialize lexer context.

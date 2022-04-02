@@ -44,27 +44,12 @@ export "C" {
 #endif /* __cplusplus */
 
 /*!
- * @brief Allocate literal context.
- * @param[in,out] literal Pointer to literal context
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_literal_allocate(nesla_literal_t *literal);
-
-/*!
  * @brief Append character to literal context.
  * @param[in,out] literal Pointer to literal context
  * @param[in] value Character to append
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 nesla_error_e nesla_literal_append(nesla_literal_t *literal, uint8_t value);
-
-/*!
- * @brief Copy literal context to literal context.
- * @param[in,out] literal Pointer to literal context
- * @param[in] value Constant pointer to literal context
- * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
- */
-nesla_error_e nesla_literal_copy(nesla_literal_t *literal, const nesla_literal_t *value);
 
 /*!
  * @brief Free literal context.
