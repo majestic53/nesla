@@ -52,10 +52,25 @@ nesla_error_e nesla(const nesla_t *context)
             goto exit;
         }
 
-        fprintf(stdout, "[%i:%i] \'%c\' (%s@%zu)\n",
-            nesla_token_get_type(token), nesla_token_get_subtype(token),
-            nesla_literal_get(nesla_token_get_literal(token))[0],
-            nesla_token_get_path(token), nesla_token_get_line(token));
+        switch(token->type) {
+            case TOKEN_END:
+                fprintf(stdout, "[%i:%i] END\n", nesla_token_get_type(token), nesla_token_get_subtype(token));
+                break;
+            case TOKEN_IDENTIFIER:
+            case TOKEN_LABEL:
+            case TOKEN_LITERAL:
+                fprintf(stdout, "[%i:%i] \"%s\" (%s@%zu)\n", nesla_token_get_type(token), nesla_token_get_subtype(token),
+                    nesla_literal_get(nesla_token_get_literal(token)), nesla_token_get_path(token), nesla_token_get_line(token));
+                break;
+            case TOKEN_SCALAR:
+                fprintf(stdout, "[%i:%i] %04X (%u) (%s@%zu)\n", nesla_token_get_type(token), nesla_token_get_subtype(token),
+                    nesla_token_get_scalar(token), nesla_token_get_scalar(token), nesla_token_get_path(token), nesla_token_get_line(token));
+                break;
+            default:
+                fprintf(stdout, "[%i:%i] (%s@%zu)\n", nesla_token_get_type(token), nesla_token_get_subtype(token),
+                    nesla_token_get_path(token), nesla_token_get_line(token));
+                break;
+        }
     } while(nesla_lexer_next(&lexer) == NESLA_SUCCESS);
 
 exit:

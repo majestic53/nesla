@@ -30,11 +30,120 @@
 #include <literal.h>
 
 /*!
+ * @enum nesla_directive_e
+ * @brief Token directive type.
+ */
+typedef enum {
+    DIRECTIVE_BANK = 0,         /*!< Bank directive */
+    DIRECTIVE_BYTE,             /*!< Byte directive */
+    DIRECTIVE_CHARACTER,        /*!< Character directive */
+    DIRECTIVE_DEFINE,           /*!< Define directive */
+    DIRECTIVE_INCLUDE,          /*!< Include directive */
+    DIRECTIVE_INCLUDE_BINARY,   /*!< Include binary directive */
+    DIRECTIVE_MAPPER,           /*!< Mapper directive */
+    DIRECTIVE_MIRROR,           /*!< Mirror directive */
+    DIRECTIVE_ORIGIN,           /*!< Origin directive */
+    DIRECTIVE_PROGRAM,          /*!< Program directive */
+    DIRECTIVE_RESERVE,          /*!< Reserve directive */
+    DIRECTIVE_UNDEFINE,         /*!< Undefine directive */
+    DIRECTIVE_WORD,             /*!< Word directive */
+    DIRECTIVE_MAX,              /*!< Max directive */
+} nesla_directive_e;
+
+/*!
+ * @enum nesla_instruction_e
+ * @brief Token instruction type.
+ */
+typedef enum {
+    INSTRUCTION_ADC,            /*!< Add carry instruction */
+    INSTRUCTION_AND,            /*!< Logical and instruction */
+    INSTRUCTION_ASL,            /*!< Arithmetic shift left instruction */
+    INSTRUCTION_BCC,            /*!< Branch carry clear instruction */
+    INSTRUCTION_BCS,            /*!< Branch carry set instruction */
+    INSTRUCTION_BEQ,            /*!< Branch equal instruction */
+    INSTRUCTION_BIT,            /*!< Bit compare instruction */
+    INSTRUCTION_BMI,            /*!< Branch negative instruction */
+    INSTRUCTION_BNE,            /*!< Branch not-equals instruction */
+    INSTRUCTION_BPL,            /*!< Branch positive instruction */
+    INSTRUCTION_BRK,            /*!< Break instruction */
+    INSTRUCTION_BVC,            /*!< Branch overflow clear instruction */
+    INSTRUCTION_BVS,            /*!< Branch overflow set instruction */
+    INSTRUCTION_CLC,            /*!< Clear carry instruction */
+    INSTRUCTION_CLD,            /*!< Clear decimal instruction */
+    INSTRUCTION_CLI,            /*!< Clear interrupt disable instruction */
+    INSTRUCTION_CLV,            /*!< Clear overflow instruction */
+    INSTRUCTION_CMP,            /*!< Compare instruction */
+    INSTRUCTION_CPX,            /*!< Compare index-x instruction */
+    INSTRUCTION_CPY,            /*!< Compare index-y instruction */
+    INSTRUCTION_DEC,            /*!< Decrement instruction */
+    INSTRUCTION_DEX,            /*!< Decrement index-x instruction */
+    INSTRUCTION_DEY,            /*!< Decrement index-y instruction */
+    INSTRUCTION_EOR,            /*!< Logical xor instruction */
+    INSTRUCTION_INC,            /*!< Increment instruction */
+    INSTRUCTION_INX,            /*!< Increment index-x instruction */
+    INSTRUCTION_INY,            /*!< Increment index-y instruction */
+    INSTRUCTION_JMP,            /*!< Jump instruction */
+    INSTRUCTION_JSR,            /*!< Jump subroutine instruction */
+    INSTRUCTION_LDA,            /*!< Load accumulator instruction */
+    INSTRUCTION_LDX,            /*!< Load index-x instruction */
+    INSTRUCTION_LDY,            /*!< Load index-y instruction */
+    INSTRUCTION_LSR,            /*!< Logical shift right instruction */
+    INSTRUCTION_NOP,            /*!< No operation instruction */
+    INSTRUCTION_ORA,            /*!< Logical or instruction */
+    INSTRUCTION_PHA,            /*!< Push accumulator instruction */
+    INSTRUCTION_PHP,            /*!< Push status instruction */
+    INSTRUCTION_PLA,            /*!< Pull accumulator instruction */
+    INSTRUCTION_PLP,            /*!< Pull status instruction */
+    INSTRUCTION_ROL,            /*!< Rotate left instruction */
+    INSTRUCTION_ROR,            /*!< Rotate right instruction */
+    INSTRUCTION_RTI,            /*!< Return interrupt instruction */
+    INSTRUCTION_RTS,            /*!< Return subroutine instruction */
+    INSTRUCTION_SBC,            /*!< Subtract carry instruction */
+    INSTRUCTION_SEC,            /*!< Set carry instruction */
+    INSTRUCTION_SED,            /*!< Set decimal instruction */
+    INSTRUCTION_SEI,            /*!< Set interrupt disable instruction */
+    INSTRUCTION_STA,            /*!< Store accumulator instruction */
+    INSTRUCTION_STX,            /*!< Store index-x instruction */
+    INSTRUCTION_STY,            /*!< Store index-y instruction */
+    INSTRUCTION_TAX,            /*!< Transfer accumulator to index-x instruction */
+    INSTRUCTION_TAY,            /*!< Transfer accumulator to index-y instruction */
+    INSTRUCTION_TSX,            /*!< Transfer stack pointer to index-x instruction */
+    INSTRUCTION_TXA,            /*!< Transfer index-x to accumulator instruction */
+    INSTRUCTION_TXS,            /*!< Transfer index-x to stack pointer instruction */
+    INSTRUCTION_TYA,            /*!< Transfer index-y to accumulator instruction */
+    INSTRUCTION_MAX,            /*!< Max instruction */
+} nesla_instruction_e;
+
+/*!
+ * @enum nesla_operand_e
+ * @brief Token operand type.
+ */
+typedef enum {
+    OPERAND_ACCUMULATOR = 0,    /*!< Accumulator operand */
+    OPERAND_INDEX_X,            /*!< Index-X operand */
+    OPERAND_INDEX_Y,            /*!< Index-Y operand */
+    OPERAND_MAX,                /*!< Max operand */
+} nesla_operand_e;
+
+/*!
+ * @enum nesla_symbol_e
+ * @brief Token symbol type.
+ */
+typedef enum {
+    SYMBOL_SEPERATOR = 0,   /*!< Seperator symbol */
+    SYMBOL_IMMEDIATE,       /*!< Immediate symbol */
+    SYMBOL_INDIRECT_CLOSE,  /*!< Close indirection symbol */
+    SYMBOL_INDIRECT_OPEN,   /*!< Open indirection symbol */
+    SYMBOL_MAX,             /*!< Max symbol */
+} nesla_symbol_e;
+
+/*!
  * @enum nesla_token_e
  * @brief Token type.
  */
 typedef enum {
-    TOKEN_DIRECTIVE = 0,        /*!< Directive token */
+    TOKEN_END = 0,              /*!< End token */
+    TOKEN_DIRECTIVE,            /*!< Directive token */
     TOKEN_IDENTIFIER,           /*!< Identifier token */
     TOKEN_INSTRUCTION,          /*!< Instruction token */
     TOKEN_LABEL,                /*!< Label token */

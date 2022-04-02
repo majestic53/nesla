@@ -30,8 +30,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#if 0 /* TODO: IMPLEMENT LEXER PARSE ROUTINES */
-
 /*!
  * @brief Allocate lexer token.
  * @param lexer Pointer to lexer context
@@ -41,7 +39,7 @@ extern "C" {
  * @param line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_lexer_allocate(nesla_lexer_t *lexer, nesla_token_e type, int subtype, const char *path, size_t line)
+static nesla_error_e nesla_lexer_append(nesla_lexer_t *lexer, nesla_token_e type, int subtype, const char *path, size_t line)
 {
     nesla_token_t *token = NULL;
     nesla_error_e result = NESLA_SUCCESS;
@@ -70,11 +68,11 @@ exit:
  * @param line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_lexer_allocate_literal(nesla_lexer_t *lexer, const nesla_literal_t *literal, nesla_token_e type, const char *path, size_t line)
+static nesla_error_e nesla_lexer_append_literal(nesla_lexer_t *lexer, const nesla_literal_t *literal, nesla_token_e type, const char *path, size_t line)
 {
     nesla_error_e result;
 
-    if((result = nesla_lexer_allocate(lexer, TOKEN_LITERAL, 0, path, line)) == NESLA_FAILURE) {
+    if((result = nesla_lexer_append(lexer, type, 0, path, line)) == NESLA_FAILURE) {
         goto exit;
     }
 
@@ -86,6 +84,8 @@ exit:
     return result;
 }
 
+#if 0 /* TODO: IMPLEMENT LEXER PARSE ROUTINES */
+
 /*!
  * @brief Allocate lexer scalar token.
  * @param lexer Pointer to lexer context
@@ -94,11 +94,11 @@ exit:
  * @param line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_lexer_allocate_scalar(nesla_lexer_t *lexer, uint16_t scalar, const char *path, size_t line)
+static nesla_error_e nesla_lexer_append_scalar(nesla_lexer_t *lexer, uint16_t scalar, const char *path, size_t line)
 {
     nesla_error_e result;
 
-    if((result = nesla_lexer_allocate(lexer, TOKEN_SCALAR, 0, path, line)) == NESLA_FAILURE) {
+    if((result = nesla_lexer_append(lexer, TOKEN_SCALAR, 0, path, line)) == NESLA_FAILURE) {
         goto exit;
     }
 
@@ -134,20 +134,137 @@ static void nesla_lexer_free_all(nesla_lexer_t *lexer)
     }
 }
 
+static bool nesla_lexer_match_type(nesla_token_e type, int *subtype, const nesla_literal_t *literal)
+{
+    static const char *DIRECTIVE[] = {
+        ".BANK", ".BYTE", ".CHR", ".DEF", ".INC", ".INCB", ".MAP", ".MIR", ".ORG", ".PRG", ".RESV", ".UNDEF", ".WORD",
+        };
+
+    static const char *INSTRUCTION[] = {
+        "ADC", "AND", "ASL", "BCC", "BCS", "BEQ", "BIT", "BMI", "BNE", "BPL", "BRK", "BVC", "BVS", "CLC", "CLD", "CLI",
+        "CLV", "CMP", "CPX", "CPY", "DEC", "DEX", "DEY", "EOR", "INC", "INX", "INY", "JMP", "JSR", "LDA", "LDX", "LDY",
+        "LSR", "NOP", "ORA", "PHA", "PHP", "PLA", "PLP", "ROL", "ROR", "RTI", "RTS", "SBC", "SEC", "SED", "SEI", "STA",
+        "STX", "STY", "TAX", "TAY", "TSX", "TXA", "TXS", "TYA",
+        };
+
+    static const char *OPERAND[] = {
+        "A", "X", "Y",
+        };
+
+    static const char *SYMBOL[] = {
+        ",", "#", ")", "(",
+        };
+
+    size_t length = 0;
+    bool result = false;
+    const char **subtypes = NULL;
+
+    switch(type) {
+        case TOKEN_DIRECTIVE:
+            subtypes = DIRECTIVE;
+            length = DIRECTIVE_MAX;
+            break;
+        case TOKEN_INSTRUCTION:
+            subtypes = INSTRUCTION;
+            length = INSTRUCTION_MAX;
+            break;
+        case TOKEN_OPERAND:
+            subtypes = OPERAND;
+            length = OPERAND_MAX;
+            break;
+        case TOKEN_SYMBOL:
+            subtypes = SYMBOL;
+            length = SYMBOL_MAX;
+            break;
+        default:
+            break;
+    }
+
+    *subtype = 0;
+
+    if(subtypes) {
+
+        for(; *subtype < length; ++*subtype) {
+
+            if((result = (strcmp(subtypes[*subtype], (const char *)nesla_literal_get(literal)) == 0))) {
+                break;
+            }
+        }
+
+        if(*subtype == length) {
+            *subtype = 0;
+        }
+    }
+
+    return result;
+}
+
 /*!
  * @brief Parse lexer alpha token.
  * @param lexer Pointer to lexer context
- * @param type Current character type
  * @param value Current character value
+ * @param path Token file path
+ * @param line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_lexer_parse_alpha(nesla_lexer_t *lexer, nesla_character_e type, uint8_t value)
+static nesla_error_e nesla_lexer_parse_alpha(nesla_lexer_t *lexer, uint8_t value, const char *path, size_t line)
 {
+    int subtype = 0;
+    nesla_token_e type;
     nesla_error_e result;
+    nesla_literal_t literal = {};
 
-    /* TODO: PARSE ALPHA */
-    result = NESLA_SUCCESS;
-    /* --- */
+    if((result = nesla_literal_append(&literal, value)) == NESLA_FAILURE) {
+        goto exit;
+    }
+
+    while(nesla_stream_next(&lexer->stream) == NESLA_SUCCESS) {
+        nesla_character_e char_type = nesla_stream_get_type(&lexer->stream);
+
+        value = nesla_stream_get(&lexer->stream);
+
+        if((value != '_')
+                && (char_type != CHARACTER_ALPHA)
+                && (char_type != CHARACTER_DIGIT)) {
+            break;
+        }
+
+        if((result = nesla_literal_append(&literal, value)) == NESLA_FAILURE) {
+            goto exit;
+        }
+    }
+
+    if(nesla_stream_get(&lexer->stream) == ':') {
+        type = TOKEN_LABEL;
+    } else if(nesla_lexer_match_type(TOKEN_INSTRUCTION, &subtype, &literal)) {
+        type = TOKEN_INSTRUCTION;
+    } else if(nesla_lexer_match_type(TOKEN_OPERAND, &subtype, &literal)) {
+        type = TOKEN_OPERAND;
+    } else {
+        type = TOKEN_IDENTIFIER;
+    }
+
+    switch(type) {
+        case TOKEN_INSTRUCTION:
+        case TOKEN_OPERAND:
+
+            if((result = nesla_lexer_append(lexer, type, subtype, path, line)) == NESLA_FAILURE) {
+                goto exit;
+            }
+            break;
+        case TOKEN_IDENTIFIER:
+        case TOKEN_LABEL:
+
+            if((result = nesla_lexer_append_literal(lexer, &literal, type, path, line)) == NESLA_FAILURE) {
+                goto exit;
+            }
+            break;
+        default:
+            break;
+    }
+
+exit:
+    nesla_literal_free(&literal);
 
     return result;
 }
@@ -155,11 +272,12 @@ static nesla_error_e nesla_lexer_parse_alpha(nesla_lexer_t *lexer, nesla_charact
 /*!
  * @brief Parse lexer digit token.
  * @param lexer Pointer to lexer context
- * @param type Current character type
  * @param value Current character value
+ * @param path Token file path
+ * @param line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_lexer_parse_digit(nesla_lexer_t *lexer, nesla_character_e type, uint8_t value)
+static nesla_error_e nesla_lexer_parse_digit(nesla_lexer_t *lexer, uint8_t value, const char *path, size_t line)
 {
     nesla_error_e result;
 
@@ -173,17 +291,73 @@ static nesla_error_e nesla_lexer_parse_digit(nesla_lexer_t *lexer, nesla_charact
 /*!
  * @brief Parse lexer symbol token.
  * @param lexer Pointer to lexer context
- * @param type Current character type
  * @param value Current character value
+ * @param path Token file path
+ * @param line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
-static nesla_error_e nesla_lexer_parse_symbol(nesla_lexer_t *lexer, nesla_character_e type, uint8_t value)
+static nesla_error_e nesla_lexer_parse_symbol(nesla_lexer_t *lexer, uint8_t value, const char *path, size_t line)
 {
-    nesla_error_e result;
+    int subtype = 0;
+    nesla_literal_t literal = {};
+    nesla_error_e result = NESLA_SUCCESS;
 
-    /* TODO: PARSE SYMBOL */
-    result = NESLA_SUCCESS;
-    /* --- */
+    if(value == ';') {
+
+        while(nesla_stream_next(&lexer->stream) == NESLA_SUCCESS) {
+
+            if(nesla_stream_get(&lexer->stream) == '\n') {
+                break;
+            }
+        }
+    } else if(value == '.') {
+
+        if((result = nesla_literal_append(&literal, value)) == NESLA_FAILURE) {
+            goto exit;
+        }
+
+        while(nesla_stream_next(&lexer->stream) == NESLA_SUCCESS) {
+
+            if(nesla_stream_get_type(&lexer->stream) != CHARACTER_ALPHA) {
+                break;
+            }
+
+            if((result = nesla_literal_append(&literal, nesla_stream_get(&lexer->stream))) == NESLA_FAILURE) {
+                goto exit;
+            }
+        }
+
+        if(!nesla_lexer_match_type(TOKEN_DIRECTIVE, &subtype, &literal)) {
+            result = SET_ERROR("Unsupported directive: \"%s\" (%s@%zu)", nesla_literal_get(&literal), path, line);
+            goto exit;
+        }
+
+        if((result = nesla_lexer_append(lexer, TOKEN_DIRECTIVE, subtype, path, line)) == NESLA_FAILURE) {
+            goto exit;
+        }
+    } else if(value == '_') {
+
+        if((result = nesla_lexer_parse_alpha(lexer, value, path, line)) == NESLA_FAILURE) {
+            goto exit;
+        }
+    } else {
+
+        if((result = nesla_literal_append(&literal, value)) == NESLA_FAILURE) {
+            goto exit;
+        }
+
+        if(!nesla_lexer_match_type(TOKEN_SYMBOL, &subtype, &literal)) {
+            result = SET_ERROR("Unsupported symbol: \"%s\" (%s@%zu)", nesla_literal_get(&literal), path, line);
+            goto exit;
+        }
+
+        if((result = nesla_lexer_append(lexer, TOKEN_SYMBOL, subtype, path, line)) == NESLA_FAILURE) {
+            goto exit;
+        }
+    }
+
+exit:
+    nesla_literal_free(&literal);
 
     return result;
 }
@@ -200,32 +374,36 @@ static nesla_error_e nesla_lexer_parse(nesla_lexer_t *lexer)
     do {
         nesla_character_e type;
         uint8_t value = nesla_stream_get(&lexer->stream);
+        size_t line = nesla_stream_get_line(&lexer->stream);
+        const char *path = nesla_stream_get_path(&lexer->stream);
 
         switch(type = nesla_stream_get_type(&lexer->stream)) {
             case CHARACTER_ALPHA:
 
-                if((result = nesla_lexer_parse_alpha(lexer, type, value)) == NESLA_FAILURE) {
+                if((result = nesla_lexer_parse_alpha(lexer, value, path, line)) == NESLA_FAILURE) {
                     goto exit;
                 }
                 break;
             case CHARACTER_DIGIT:
 
-                if((result = nesla_lexer_parse_digit(lexer, type, value)) == NESLA_FAILURE) {
+                if((result = nesla_lexer_parse_digit(lexer, value, path, line)) == NESLA_FAILURE) {
                     goto exit;
                 }
                 break;
             case CHARACTER_SYMBOL:
 
-                if((result = nesla_lexer_parse_symbol(lexer, type, value)) == NESLA_FAILURE) {
+                if((result = nesla_lexer_parse_symbol(lexer, value, path, line)) == NESLA_FAILURE) {
                     goto exit;
                 }
                 break;
             default:
-                result = SET_ERROR("Invalid character: [%i] \'%c\' (%02X) (%s@%i)", type, isprint(value) && !isspace(value) ? value : '.',
-                    value, nesla_stream_get_path(&lexer->stream), nesla_stream_get_line(&lexer->stream));
-                goto exit;
+                break;
         }
     } while(nesla_stream_next(&lexer->stream) == NESLA_SUCCESS);
+
+    if((result = nesla_lexer_append(lexer, TOKEN_END, 0, NULL, 0)) == NESLA_FAILURE) {
+        goto exit;
+    }
 
     nesla_lexer_reset(lexer);
 
