@@ -32,11 +32,11 @@ extern "C" {
 
 /*!
  * @brief Allocate lexer token.
- * @param lexer Pointer to lexer context
- * @param type Token type
- * @param subtype Token subtype
- * @param path Token file path
- * @param line Token flle line
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] type Token type
+ * @param[in] subtype Token subtype
+ * @param[in] path Token file path
+ * @param[in] line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_append(nesla_lexer_t *lexer, nesla_token_e type, int subtype, const char *path, size_t line)
@@ -61,11 +61,11 @@ exit:
 
 /*!
  * @brief Allocate lexer literal token.
- * @param lexer Pointer to lexer context
- * @param literal Constant pointer to literal context
- * @param type Token type
- * @param path Token file path
- * @param line Token flle line
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] literal Constant pointer to literal context
+ * @param[in] type Token type
+ * @param[in] path Token file path
+ * @param[in] line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_append_literal(nesla_lexer_t *lexer, const nesla_literal_t *literal, nesla_token_e type, const char *path, size_t line)
@@ -88,10 +88,10 @@ exit:
 
 /*!
  * @brief Allocate lexer scalar token.
- * @param lexer Pointer to lexer context
- * @param scalar Scalar value
- * @param path Token file path
- * @param line Token flle line
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] scalar Scalar value
+ * @param[in] path Token file path
+ * @param[in] line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_append_scalar(nesla_lexer_t *lexer, uint16_t scalar, const char *path, size_t line)
@@ -112,8 +112,8 @@ exit:
 
 /*!
  * @brief Free lexer token.
- * @param lexer Pointer to lexer context
- * @param entry Pointer to list entry context
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] entry Pointer to list entry context
  */
 static void nesla_lexer_free(nesla_lexer_t *lexer, nesla_list_entry_t *entry)
 {
@@ -124,7 +124,7 @@ static void nesla_lexer_free(nesla_lexer_t *lexer, nesla_list_entry_t *entry)
 
 /*!
  * @brief Free all lexer tokens.
- * @param lexer Pointer to lexer context
+ * @param[in,out] lexer Pointer to lexer context
  */
 static void nesla_lexer_free_all(nesla_lexer_t *lexer)
 {
@@ -134,6 +134,13 @@ static void nesla_lexer_free_all(nesla_lexer_t *lexer)
     }
 }
 
+/*!
+ * @brief Match lexer token subtype.
+ * @param[in] type Token type
+ * @param[in,out] subtype Token subtype
+ * @param[in] literal Token literal
+ * @return true if match is found, false otherwise
+ */
 static bool nesla_lexer_match_type(nesla_token_e type, int *subtype, const nesla_literal_t *literal)
 {
     static const char *DIRECTIVE[] = {
@@ -201,10 +208,10 @@ static bool nesla_lexer_match_type(nesla_token_e type, int *subtype, const nesla
 
 /*!
  * @brief Parse lexer alpha token.
- * @param lexer Pointer to lexer context
- * @param value Current character value
- * @param path Token file path
- * @param line Token flle line
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] value Current character value
+ * @param[in] path Token file path
+ * @param[in] line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_parse_alpha(nesla_lexer_t *lexer, uint8_t value, const char *path, size_t line)
@@ -271,10 +278,10 @@ exit:
 
 /*!
  * @brief Parse lexer digit token.
- * @param lexer Pointer to lexer context
- * @param value Current character value
- * @param path Token file path
- * @param line Token flle line
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] value Current character value
+ * @param[in] path Token file path
+ * @param[in] line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_parse_digit(nesla_lexer_t *lexer, uint8_t value, const char *path, size_t line)
@@ -290,10 +297,10 @@ static nesla_error_e nesla_lexer_parse_digit(nesla_lexer_t *lexer, uint8_t value
 
 /*!
  * @brief Parse lexer symbol token.
- * @param lexer Pointer to lexer context
- * @param value Current character value
- * @param path Token file path
- * @param line Token flle line
+ * @param[in,out] lexer Pointer to lexer context
+ * @param[in] value Current character value
+ * @param[in] path Token file path
+ * @param[in] line Token flle line
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_parse_symbol(nesla_lexer_t *lexer, uint8_t value, const char *path, size_t line)
@@ -364,7 +371,7 @@ exit:
 
 /*!
  * @brief Parse lexer token.
- * @param lexer Pointer to lexer context
+ * @param[in,out] lexer Pointer to lexer context
  * @return NESLA_ERROR on failure, NESLA_SUCCESS otherwise
  */
 static nesla_error_e nesla_lexer_parse(nesla_lexer_t *lexer)
